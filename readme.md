@@ -4,7 +4,7 @@ Portal de intranet corporativa dentro do GLPI — aba própria na tela principal
 
 > **Corporate intranet portal for GLPI**: a dedicated tab on the main screen with a personalized greeting, profile contact info, assigned assets, personal ticket cards, a notice board and quick links (Tabler icon or uploaded image).
 
-- **Versão:** 1.5.0
+- **Versão:** 1.5.1
 - **Compatibilidade:** GLPI 10 e 11
 - **Idiomas:** English (`en_GB`), Português (`pt_BR`)
 - **Licença:** GPL-2.0-or-later

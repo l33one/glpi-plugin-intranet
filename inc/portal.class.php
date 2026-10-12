@@ -248,9 +248,10 @@ public static function showCentralPanel($data = null) {
 
        $avatar = self::getUserAvatar($user_fields);
        $contact = ($me > 0 && !empty($user_fields)) ? self::getUserContact($me, $user_fields) : null;
+       $assets  = ($me > 0 && !empty($user_fields)) ? self::getUserAssets($me) : [];
 
        echo '<div class="card mb-2 intranet-hello"><div class="card-body">';
-       echo '<div class="d-flex align-items-center gap-3 flex-wrap">';
+       echo '<div class="d-flex flex-wrap align-items-center gap-3">';
        echo '<span class="intranet-avatar">';
        if ($avatar !== '') {
           echo '<img src="' . self::esc($avatar) . '" alt="">';
@@ -258,13 +259,13 @@ public static function showCentralPanel($data = null) {
           echo '<i class="ti ti-user"></i>';
        }
        echo '</span>';
-       echo '<div class="intranet-hello-main">';
+       echo '<div class="intranet-hello-main flex-grow-1">';
        echo '<div class="intranet-hello-title">' . $greeting
           . ($first !== '' ? ', ' . self::esc($first) : '') . '!</div>';
        echo '<div class="text-muted small">' . self::esc(Html::convDate(date('Y-m-d'))) . '</div>';
        echo '</div>';
        if ($contact !== null) {
-          echo '<div class="ms-lg-auto intranet-hello-contact small">';
+          echo '<div class="intranet-hello-contact small">';
           self::contactInline('ti-mail', $contact['emails']);
           self::contactInline('ti-phone', $contact['phones']);
           self::contactInline('ti-user-check', $contact['manager']);
@@ -275,6 +276,27 @@ public static function showCentralPanel($data = null) {
           echo '</div>';
        }
        echo '</div>';
+
+       // Assets inline in the greeting bar (compact chips)
+       if (!empty($assets)) {
+          echo '<div class="intranet-hello-assets d-flex flex-wrap gap-1 mt-2">';
+          foreach (array_slice($assets, 0, 4) as $asset) {
+             echo '<span class="badge bg-light text-dark border intranet-asset-chip">';
+             echo '<i class="' . self::esc($asset['icon']) . ' me-1 text-muted"></i>';
+             if (!empty($asset['url'])) {
+                echo '<a href="' . self::esc($asset['url']) . '" class="text-decoration-none text-dark">' . self::esc($asset['label']) . '</a>';
+             } else {
+                echo self::esc($asset['label']);
+             }
+             echo '</span>';
+          }
+          if (count($assets) > 4) {
+             echo '<span class="badge bg-secondary intranet-asset-chip">+'
+                . (count($assets) - 4) . '</span>';
+          }
+          echo '</div>';
+       }
+
        echo '</div></div>';
     }
 
@@ -330,39 +352,14 @@ public static function showCentralPanel($data = null) {
     }
 
     /**
-     * Sidebar with two areas:
-     * 1. Thin left strip with stacked navigation icons (always visible)
-     * 2. Main panel with GLPI logo + quick links (2 per row) + compact assets
+     * Sidebar: fixed width, responsive tiles (logo + quick links).
+     * No collapsible strip; content always visible, tiles wrap responsively.
      */
     private static function showSidebar(): void {
        $me = (int)Session::getLoginUserID();
        $portal_url = self::portalUrl();
 
        echo '<aside class="intranet-sidebar">';
-       // Thin navigation strip (always visible)
-       echo '<nav class="intranet-nav-strip" aria-label="Navegação principal">';
-       $nav_items = [
-          ['ti ti-chart-bar', 'Dashboard', $portal_url],
-          ['ti ti-file-text', 'Formulários', $portal_url . '#forms'],
-          ['ti ti-device-desktop', 'Ativos', $portal_url . '#assets'],
-          ['ti ti-users', 'Usuários', $portal_url . '#users'],
-          ['ti ti-chart-pie', 'Relatórios', $portal_url . '#reports'],
-          ['ti ti-settings', 'Configurações', self::configUrl()],
-       ];
-       foreach ($nav_items as $item) {
-          echo '<a class="intranet-nav-item" href="' . self::esc($item[2]) . '" title="' . self::esc($item[1]) . '">'
-             . '<i class="' . self::esc($item[0]) . '"></i></a>';
-       }
-       // Quick access colored dots at bottom
-       echo '<div class="intranet-nav-quick">';
-       echo '<span class="intranet-quick-dot" style="background:#206bc4" title="Dashboard"></span>';
-       echo '<span class="intranet-quick-dot" style="background:#37c97a" title="Novo chamado"></span>';
-       echo '<span class="intranet-quick-dot" style="background:#f5a623" title="Base de conhecimento"></span>';
-       echo '<span class="intranet-quick-dot" style="background:#e74c3c" title="Alertas"></span>';
-       echo '</div>';
-       echo '</nav>';
-
-       // Main sidebar panel (collapsible content)
        echo '<div class="intranet-sidebar-panel">';
        $logo = self::getGlpiLogo();
        if ($logo !== '') {
@@ -370,25 +367,6 @@ public static function showCentralPanel($data = null) {
        }
        if (PluginIntranetConfig::showLinks()) {
           self::showLinks(true, 'intranet-sidebar-links', false);
-       }
-
-       $assets = ($me > 0) ? self::getUserAssets($me) : [];
-       echo '<h2 class="h6 mt-3 mb-2 px-3"><i class="ti ti-device-desktop me-1"></i>'
-          . self::esc(__('My assets', 'intranet')) . '</h2>';
-       if (empty($assets)) {
-          echo '<p class="text-muted small mb-3 px-3">' . self::esc(__('No assets assigned to you.', 'intranet')) . '</p>';
-       } else {
-          echo '<ul class="list-unstyled mb-3 px-3 intranet-side-assets">';
-          foreach (array_slice($assets, 0, 6) as $asset) {
-             echo '<li class="text-truncate small"><i class="' . self::esc($asset['icon']) . ' me-1 text-muted"></i>';
-             if (!empty($asset['url'])) {
-                echo '<a href="' . self::esc($asset['url']) . '">' . self::esc($asset['label']) . '</a>';
-             } else {
-                echo self::esc($asset['label']);
-             }
-             echo '</li>';
-          }
-          echo '</ul>';
        }
        echo '<div class="intranet-sidebar-footer">';
        echo '<small class="text-muted d-block text-center">' . self::esc(__('Intranet', 'intranet')) . '</small>';

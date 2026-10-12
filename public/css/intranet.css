@@ -15,244 +15,30 @@
  * light and dark GLPI themes are supported with no hardcoded backgrounds.
  */
 
-/* --- Metric tiles ------------------------------------------------------ */
-.intranet-metric {
-   transition: transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+:root {
+   --intranet-sidebar-width: 280px;
+   --intranet-navbar-height: 56px;
 }
 
-a.intranet-metric-link,
-.intranet-metric:has(a.stretched-link):hover {
-   transform: translateY(-2px);
-}
+/* ==========================================================================
+   Core layout: fixed navbar, fixed sidebar, fluid main content
+   ========================================================================== */
 
-.intranet-metric-icon {
-   font-size: 1.9rem;
-   line-height: 1;
-   flex-shrink: 0;
-}
-
-.intranet-metric-value {
-   font-size: 1.5rem;
-   font-weight: 700;
-   line-height: 1.1;
-}
-
-.intranet-metric-label {
-   font-size: 0.8rem;
-   color: var(--tblr-secondary, #6c757d);
-}
-
-/* --- Announcements ----------------------------------------------------- */
-.intranet-announcements .intranet-announcement {
-   text-align: start;
-}
-
-.intranet-announcement-excerpt {
-   display: -webkit-box;
-   -webkit-line-clamp: 2;
-   -webkit-box-orient: vertical;
-   overflow: hidden;
-   max-height: 3em;
-}
-
-.intranet-announcement:focus-visible {
-   outline: 2px solid var(--tblr-primary, #206bc4);
-   outline-offset: -2px;
-}
-
-/* --- Profile (contact + assets) ------------------------------------------ */
-.intranet-contact li {
-   overflow-wrap: break-word;
-}
-
-.intranet-assets {
-   max-height: 220px;
-   overflow-y: auto;
-}
-
-/* --- Quick links: visual tiles -------------------------------------------- */
-.intranet-links-grid {
-   display: grid;
-   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-   gap: 0.75rem;
-}
-
-.intranet-tile {
-   position: relative;
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-   gap: 0.5rem;
-   padding: 1rem 0.5rem 0.75rem;
-   border: 1px solid var(--tblr-border-color, #dee2e6);
-   border-radius: 0.75rem;
-   text-decoration: none;
-   color: inherit;
-   background: var(--tblr-card-bg, transparent);
-   transition: transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out, border-color 0.15s ease-in-out;
-}
-
-.intranet-tile:hover {
-   transform: translateY(-3px);
-   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.12);
-   border-color: var(--tblr-primary, #206bc4);
-   text-decoration: none;
-   color: inherit;
-}
-
-.intranet-tile-icon {
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   width: 52px;
-   height: 52px;
-   border-radius: 1rem;
-   background: rgba(32, 107, 196, 0.1);
-   font-size: 1.75rem;
-   color: var(--tblr-primary, #206bc4);
-   overflow: hidden;
-   flex-shrink: 0;
-}
-
-.intranet-tile-icon img {
-   width: 100%;
-   height: 100%;
-   object-fit: contain;
-   padding: 6px;
-   background: #fff;
-}
-
-.intranet-tile-label {
-   font-size: 0.8rem;
-   font-weight: 600;
-   text-align: center;
-   line-height: 1.25;
-   display: -webkit-box;
-   -webkit-line-clamp: 2;
-   -webkit-box-orient: vertical;
-   overflow: hidden;
-   max-height: 2.5em;
-}
-
-.intranet-tile-external {
-   position: absolute;
-   top: 0.4rem;
-   right: 0.5rem;
-   font-size: 0.75em;
-   opacity: 0.5;
-}
-
-.intranet-link-img {
-   width: 20px;
-   height: 20px;
-   object-fit: contain;
-   flex-shrink: 0;
-   border-radius: 4px;
-}
-
-.intranet-link-thumb {
-   width: 32px;
-   height: 32px;
-   object-fit: contain;
-   flex-shrink: 0;
-   border: 1px solid var(--tblr-border-color, #dee2e6);
-   border-radius: 4px;
-   background: #fff;
-}
-
-.intranet-link-external {
-   font-size: 0.75em;
-   opacity: 0.6;
-}
-
-/* --- Carousel banners ------------------------------------------------------ */
-.intranet-carousel {
-   border-radius: 0.75rem;
-   overflow: hidden;
-}
-
-.intranet-carousel-img {
-   max-height: 280px;
-   object-fit: cover;
-   background: #000;
-}
-
-.intranet-carousel-caption span {
-   display: inline-block;
-   padding: 0.25rem 0.9rem;
-   border-radius: 2rem;
-   background: rgba(0, 0, 0, 0.55);
-   font-weight: 600;
-}
-
-.intranet-banner-preview {
-   max-height: 160px;
-}
-
-.intranet-banner-thumb {
-   height: 40px;
-   max-width: 160px;
-   object-fit: cover;
-   border-radius: 4px;
-   vertical-align: middle;
-}
-
-/* --- Reader modal -------------------------------------------------------- */
-#intranet-announcement-body {
-   white-space: pre-wrap;
-   overflow-wrap: break-word;
-}
-
-/* --- Panel on the dashboard tab ------------------------------------------ */
-.intranet-panel .card-body > :last-child {
-   margin-bottom: 0;
-}
-
-/* --- Compact layout: fit more on screen, less scrolling -------------------- */
-.intranet-panel > .card-body {
-   padding: 0.75rem;
-}
-
-.intranet-portal.container-fluid {
-   padding-top: 0.75rem;
-   padding-bottom: 0.75rem;
-}
-
-.intranet-greeting {
-   display: flex;
-   align-items: baseline;
-   flex-wrap: wrap;
-   column-gap: 0.5rem;
-   margin-bottom: 0.5rem !important;
-}
-
-.intranet-greeting .mb-1 {
-   margin-bottom: 0 !important;
-}
-
-.intranet-profile .card-body {
-   padding: 0.6rem 0.75rem;
-}
-
-.intranet-profile h3.h6 {
-   margin-bottom: 0.35rem !important;
-   font-size: 0.85rem;
-}
-
-/* --- App Layout: fixed navbar, sidebar, main content ------------------------ */
 .intranet-app {
    min-height: 100vh;
    display: flex;
    flex-direction: column;
+   overflow-x: hidden;
 }
 
 .intranet-navbar {
    position: sticky;
    top: 0;
    z-index: 1030;
-   height: 56px;
+   height: var(--intranet-navbar-height);
    padding: 0 1rem;
    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+   flex-shrink: 0;
 }
 
 .intranet-nav-avatar {
@@ -272,77 +58,25 @@ a.intranet-metric-link,
    display: flex;
    flex: 1;
    overflow: hidden;
+   min-height: 0;
 }
 
 .intranet-sidebar {
-   width: 260px;
-   min-width: 260px;
+   width: var(--intranet-sidebar-width);
+   min-width: var(--intranet-sidebar-width);
+   max-width: 100%;
    background: var(--tblr-card-bg, #fff);
    border-right: 1px solid var(--tblr-border-color, #dee2e6);
    display: flex;
    flex-direction: column;
-   transition: width 0.2s ease, min-width 0.2s ease;
-   z-index: 1020;
-}
-
-.intranet-sidebar.collapsed {
-   width: 72px;
-   min-width: 72px;
-}
-
-.intranet-nav-strip {
-   width: 72px;
    flex-shrink: 0;
-   background: #212529;
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-   padding: 1rem 0;
-   gap: 0.5rem;
-   border-right: 1px solid rgba(255,255,255,0.08);
-}
-
-.intranet-nav-item {
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   width: 44px;
-   height: 44px;
-   border-radius: 0.5rem;
-   color: rgba(255,255,255,0.65);
-   text-decoration: none;
-   transition: background 0.15s, color 0.15s;
-}
-
-.intranet-nav-item:hover,
-.intranet-nav-item:focus {
-   background: rgba(255,255,255,0.1);
-   color: #fff;
-}
-
-.intranet-nav-quick {
-   margin-top: auto;
-   padding-bottom: 1rem;
-   display: flex;
-   justify-content: center;
-   gap: 0.35rem;
-}
-
-.intranet-quick-dot {
-   width: 8px;
-   height: 8px;
-   border-radius: 50%;
-   opacity: 0.7;
-   transition: opacity 0.15s, transform 0.15s;
-}
-
-.intranet-quick-dot:hover {
-   opacity: 1;
-   transform: scale(1.2);
+   z-index: 1020;
 }
 
 .intranet-sidebar-panel {
    flex: 1;
+   display: flex;
+   flex-direction: column;
    padding: 1rem;
    overflow-y: auto;
 }
@@ -350,7 +84,7 @@ a.intranet-metric-link,
 .intranet-sidebar-logo {
    text-align: center;
    padding: 0.5rem 0 1rem;
-   margin-bottom: 0.5rem;
+   margin-bottom: 0.75rem;
    border-bottom: 1px solid var(--tblr-border-color, #dee2e6);
 }
 
@@ -360,22 +94,18 @@ a.intranet-metric-link,
    object-fit: contain;
 }
 
+/* Sidebar quick links: responsive grid, max 2 per row on wide, 1 on narrow */
 .intranet-sidebar-links {
-   grid-template-columns: 1fr 1fr;
+   display: grid;
+   grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
    gap: 0.5rem;
+   flex: 1;
+   align-content: start;
 }
 
 .intranet-sidebar-links .intranet-tile {
    padding: 0.75rem 0.5rem;
-}
-
-.intranet-side-assets li {
-   padding: 0.2rem 0;
-   border-bottom: 1px dashed var(--tblr-border-color, #e9ecef);
-}
-
-.intranet-side-assets li:last-child {
-   border-bottom: 0;
+   justify-content: center;
 }
 
 .intranet-sidebar-footer {
@@ -385,8 +115,10 @@ a.intranet-metric-link,
 }
 
 .intranet-main {
-   flex: 1;
+   flex: 1 1 auto;
+   min-width: 0;
    overflow-y: auto;
+   overflow-x: hidden;
    padding: 1.5rem;
    background: var(--tblr-body-bg, #f8f9fa);
 }
@@ -402,29 +134,45 @@ a.intranet-metric-link,
    object-fit: cover;
 }
 
-/* Metrics row - single line on wide screens */
+/* ==========================================================================
+   Metrics row: responsive wrap, NO horizontal scroll
+   ========================================================================== */
 .intranet-metrics {
-   flex-wrap: nowrap;
-   overflow-x: auto;
+   display: flex;
+   flex-wrap: wrap;
    gap: 0.75rem;
    padding-bottom: 0.5rem;
 }
 
 .intranet-metric {
-   min-width: 180px;
-   flex: 0 0 auto;
+   flex: 1 1 180px;
+   max-width: 100%;
+   min-width: 0;
 }
 
-/* Forms and saved searches cards */
+/* ==========================================================================
+   Forms / saved searches cards
+   ========================================================================== */
 .intranet-forms,
 .intranet-searches {
    height: 100%;
+   display: flex;
+   flex-direction: column;
+}
+
+.intranet-forms .card-body,
+.intranet-searches .card-body {
+   flex: 1;
+   display: flex;
+   flex-direction: column;
 }
 
 .intranet-forms-list,
 .intranet-searches-list {
+   flex: 1;
    max-height: 280px;
    overflow-y: auto;
+   overflow-x: hidden;
 }
 
 .intranet-forms-list a,
@@ -438,7 +186,9 @@ a.intranet-metric-link,
    color: var(--tblr-primary, #206bc4);
 }
 
-/* Greeting bar (showGreeting) */
+/* ==========================================================================
+   Greeting bar with inline contact + assets chips
+   ========================================================================== */
 .intranet-hello .card-body {
    padding: 0.75rem 1rem;
 }
@@ -477,6 +227,25 @@ a.intranet-metric-link,
    max-width: 100%;
 }
 
+/* Assets chips inside greeting bar */
+.intranet-hello-assets {
+   flex-basis: 100%;
+}
+
+.intranet-asset-chip {
+   font-size: 0.68rem;
+   padding: 0.2rem 0.5rem;
+   white-space: nowrap;
+}
+
+.intranet-asset-chip a {
+   color: inherit;
+}
+
+.intranet-asset-chip a:hover {
+   color: var(--tblr-primary, #206bc4);
+}
+
 /* Announcements list */
 .intranet-announcements .list-group-item {
    padding: 0.5rem 0.75rem;
@@ -487,18 +256,21 @@ a.intranet-metric-link,
    max-height: 1.5em;
 }
 
-/* Quick links tiles (sidebar and main) */
+/* ==========================================================================
+   Quick links tiles (sidebar and main)
+   ========================================================================== */
 .intranet-links-grid {
    display: grid;
    gap: 0.5rem;
 }
 
-.intranet-links-sidebar {
-   grid-template-columns: 1fr 1fr;
+.intranet-sidebar-links {
+   grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
 }
 
 .intranet-sidebar-links .intranet-tile {
-   padding: 0.6rem 0.4rem;
+   padding: 0.75rem 0.5rem;
+   justify-content: center;
 }
 
 .intranet-tile {
@@ -562,22 +334,421 @@ a.intranet-metric-link,
    opacity: 0.5;
 }
 
-/* Sidebar collapsed state */
-.intranet-sidebar.collapsed .intranet-sidebar-panel {
-   display: none;
+/* ==========================================================================
+   Sidebar (fixed, non-collapsible; mobile off-canvas)
+   ========================================================================== */
+.intranet-sidebar {
+   width: var(--intranet-sidebar-width);
+   min-width: var(--intranet-sidebar-width);
+   max-width: 100%;
+   background: var(--tblr-card-bg, #fff);
+   border-right: 1px solid var(--tblr-border-color, #dee2e6);
+   display: flex;
+   flex-direction: column;
+   flex-shrink: 0;
+   z-index: 1020;
 }
 
-.intranet-sidebar.collapsed .intranet-nav-strip {
-   width: 72px;
+.intranet-sidebar-panel {
+   flex: 1;
+   display: flex;
+   flex-direction: column;
+   padding: 1rem;
+   overflow-y: auto;
 }
 
-/* Responsive */
+.intranet-sidebar-logo {
+   text-align: center;
+   padding: 0.5rem 0 1rem;
+   margin-bottom: 0.75rem;
+   border-bottom: 1px solid var(--tblr-border-color, #dee2e6);
+}
+
+.intranet-sidebar-logo img {
+   max-width: 100%;
+   max-height: 64px;
+   object-fit: contain;
+}
+
+.intranet-sidebar-links {
+   display: grid;
+   grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+   gap: 0.5rem;
+   flex: 1;
+   align-content: start;
+}
+
+.intranet-sidebar-links .intranet-tile {
+   padding: 0.75rem 0.5rem;
+   justify-content: center;
+}
+
+.intranet-sidebar-footer {
+   margin-top: auto;
+   padding-top: 1rem;
+   border-top: 1px solid var(--tblr-border-color, #dee2e6);
+}
+
+/* ==========================================================================
+   Main content area
+   ========================================================================== */
+.intranet-app {
+   min-height: 100vh;
+   display: flex;
+   flex-direction: column;
+   overflow-x: hidden;
+}
+
+.intranet-navbar {
+   position: sticky;
+   top: 0;
+   z-index: 1030;
+   height: var(--intranet-navbar-height);
+   padding: 0 1rem;
+   box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+   flex-shrink: 0;
+}
+
+.intranet-nav-avatar {
+   width: 32px;
+   height: 32px;
+   border-radius: 50%;
+   object-fit: cover;
+}
+
+.intranet-nav-search .form-control {
+   background: #f8f9fa;
+   border: none;
+   box-shadow: none;
+}
+
+.intranet-app-body {
+   display: flex;
+   flex: 1;
+   overflow: hidden;
+   min-height: 0;
+}
+
+.intranet-main {
+   flex: 1 1 auto;
+   min-width: 0;
+   overflow-y: auto;
+   overflow-x: hidden;
+   padding: 1.5rem;
+   background: var(--tblr-body-bg, #f8f9fa);
+}
+
+.intranet-board-compact {
+   max-width: 1400px;
+   margin: 0 auto;
+}
+
+/* Hero banner (banners carousel serves as hero) */
+.intranet-carousel-img {
+   max-height: 220px;
+   object-fit: cover;
+}
+
+/* ==========================================================================
+   Metrics row: responsive wrap, NO horizontal scroll
+   ========================================================================== */
+.intranet-metrics {
+   display: flex;
+   flex-wrap: wrap;
+   gap: 0.75rem;
+   padding-bottom: 0.5rem;
+}
+
+.intranet-metric {
+   flex: 1 1 180px;
+   max-width: 100%;
+   min-width: 0;
+}
+
+/* Forms and saved searches cards */
+.intranet-forms,
+.intranet-searches {
+   height: 100%;
+   display: flex;
+   flex-direction: column;
+}
+
+.intranet-forms .card-body,
+.intranet-searches .card-body {
+   flex: 1;
+   display: flex;
+   flex-direction: column;
+}
+
+.intranet-forms-list,
+.intranet-searches-list {
+   flex: 1;
+   max-height: 280px;
+   overflow-y: auto;
+   overflow-x: hidden;
+}
+
+.intranet-forms-list a,
+.intranet-searches-list a {
+   text-decoration: none;
+   color: inherit;
+}
+
+.intranet-forms-list a:hover,
+.intranet-searches-list a:hover {
+   color: var(--tblr-primary, #206bc4);
+}
+
+/* Greeting bar (showGreeting) */
+.intranet-hello .card-body {
+   padding: 0.75rem 1rem;
+}
+
+.intranet-avatar {
+   width: 48px;
+   height: 48px;
+   border-radius: 50%;
+   overflow: hidden;
+   flex-shrink: 0;
+   background: rgba(32, 107, 196, 0.12);
+   color: var(--tblr-primary, #206bc4);
+   font-size: 1.5rem;
+}
+
+.intranet-avatar img {
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+}
+
+.intranet-hello-title {
+   font-size: 1.1rem;
+   font-weight: 700;
+   line-height: 1.2;
+}
+
+.intranet-hello-contact {
+   min-width: 200px;
+}
+
+.intranet-hello-line {
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
+   max-width: 100%;
+}
+
+/* Assets chips inside greeting bar */
+.intranet-hello-assets {
+   flex-basis: 100%;
+}
+
+.intranet-asset-chip {
+   font-size: 0.68rem;
+   padding: 0.2rem 0.5rem;
+   white-space: nowrap;
+}
+
+.intranet-asset-chip a {
+   color: inherit;
+}
+
+.intranet-asset-chip a:hover {
+   color: var(--tblr-primary, #206bc4);
+}
+
+/* Announcements list */
+.intranet-announcements .list-group-item {
+   padding: 0.5rem 0.75rem;
+}
+
+.intranet-announcement-excerpt {
+   -webkit-line-clamp: 1;
+   max-height: 1.5em;
+}
+
+/* ==========================================================================
+   Quick links tiles (sidebar and main)
+   ========================================================================== */
+.intranet-links-grid {
+   display: grid;
+   gap: 0.5rem;
+}
+
+.intranet-sidebar-links {
+   grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+}
+
+.intranet-sidebar-links .intranet-tile {
+   padding: 0.75rem 0.5rem;
+   justify-content: center;
+}
+
+.intranet-tile {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   gap: 0.35rem;
+   padding: 0.6rem 0.5rem;
+   border: 1px solid var(--tblr-border-color, #dee2e6);
+   border-radius: 0.75rem;
+   text-decoration: none;
+   color: inherit;
+   background: var(--tblr-card-bg, #fff);
+   transition: transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
+.intranet-tile:hover {
+   transform: translateY(-2px);
+   box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
+   border-color: var(--tblr-primary, #206bc4);
+   text-decoration: none;
+   color: inherit;
+}
+
+.intranet-tile-icon {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   width: 40px;
+   height: 40px;
+   border-radius: 0.75rem;
+   background: rgba(32, 107, 196, 0.1);
+   font-size: 1.4rem;
+   color: var(--tblr-primary, #206bc4);
+   overflow: hidden;
+   flex-shrink: 0;
+}
+
+.intranet-tile-icon img {
+   width: 100%;
+   height: 100%;
+   object-fit: contain;
+   padding: 6px;
+   background: #fff;
+}
+
+.intranet-tile-label {
+   font-size: 0.7rem;
+   font-weight: 600;
+   text-align: center;
+   line-height: 1.2;
+   display: -webkit-box;
+   -webkit-line-clamp: 2;
+   -webkit-box-orient: vertical;
+   overflow: hidden;
+   max-height: 2.4em;
+}
+
+.intranet-tile-external {
+   font-size: 0.7em;
+   opacity: 0.5;
+}
+
+/* ==========================================================================
+   Sidebar (fixed width, non-collapsible; mobile off-canvas)
+   ========================================================================== */
+.intranet-sidebar {
+   width: var(--intranet-sidebar-width);
+   min-width: var(--intranet-sidebar-width);
+   max-width: 100%;
+   background: var(--tblr-card-bg, #fff);
+   border-right: 1px solid var(--tblr-border-color, #dee2e6);
+   display: flex;
+   flex-direction: column;
+   flex-shrink: 0;
+   z-index: 1020;
+}
+
+.intranet-sidebar-panel {
+   flex: 1;
+   display: flex;
+   flex-direction: column;
+   padding: 1rem;
+   overflow-y: auto;
+}
+
+.intranet-sidebar-logo {
+   text-align: center;
+   padding: 0.5rem 0 1rem;
+   margin-bottom: 0.75rem;
+   border-bottom: 1px solid var(--tblr-border-color, #dee2e6);
+}
+
+.intranet-sidebar-logo img {
+   max-width: 100%;
+   max-height: 64px;
+   object-fit: contain;
+}
+
+.intranet-sidebar-links {
+   display: grid;
+   grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+   gap: 0.5rem;
+   flex: 1;
+   align-content: start;
+}
+
+.intranet-sidebar-links .intranet-tile {
+   padding: 0.75rem 0.5rem;
+   justify-content: center;
+}
+
+.intranet-sidebar-footer {
+   margin-top: auto;
+   padding-top: 1rem;
+   border-top: 1px solid var(--tblr-border-color, #dee2e6);
+}
+
+/* ==========================================================================
+   Main content area
+   ========================================================================== */
+.intranet-app {
+   min-height: 100vh;
+   display: flex;
+   flex-direction: column;
+   overflow-x: hidden;
+}
+
+.intranet-navbar {
+   position: sticky;
+   top: 0;
+   z-index: 1030;
+   height: var(--intranet-navbar-height);
+   padding: 0 1rem;
+   box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+   flex-shrink: 0;
+}
+
+.intranet-nav-avatar {
+   width: 32px;
+   height: 32px;
+   border-radius: 50%;
+   object-fit: cover;
+}
+
+.intranet-nav-search .form-control {
+   background: #f8f9fa;
+   border: none;
+   box-shadow: none;
+}
+
+.intranet-app-body {
+   display: flex;
+   flex: 1;
+   overflow: hidden;
+   min-height: 0;
+}
+
+/* ==========================================================================
+   Responsive breakpoints
+   ========================================================================== */
 @media (max-width: 991.98px) {
    .intranet-sidebar {
       position: fixed;
-      left: -260px;
-      top: 56px;
-      height: calc(100vh - 56px);
+      left: calc(var(--intranet-sidebar-width) * -1);
+      top: var(--intranet-navbar-height);
+      height: calc(100vh - var(--intranet-navbar-height));
       z-index: 1040;
       box-shadow: 0 0.5rem 1.5rem rgba(0,0,0,0.15);
    }
@@ -587,117 +758,97 @@ a.intranet-metric-link,
    .intranet-main {
       padding: 1rem;
    }
-   .intranet-metrics {
-      flex-wrap: wrap;
-   }
-   .intranet-metric {
-      min-width: calc(50% - 0.375rem);
-      flex: 1 1 auto;
+   .intranet-nav-search {
+      display: none !important;
    }
 }
 
 @media (max-width: 575.98px) {
-   .intranet-metric {
-      min-width: 100%;
-   }
    .intranet-hello-contact {
-      min-width: 100%;
+      width: 100%;
       margin-top: 0.5rem;
+   }
+   .intranet-metric {
+      flex: 1 1 100%;
+   }
+   .intranet-avatar {
+      width: 40px;
+      height: 40px;
+      font-size: 1.25rem;
+   }
+   .intranet-hello-title {
+      font-size: 1rem;
+   }
+   .intranet-navbar {
+      padding: 0 0.75rem;
    }
 }
 
-/* Reduced motion */
+/* ==========================================================================
+   Reduced motion
+   ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
    .intranet-sidebar,
    .intranet-nav-item,
    .intranet-quick-dot,
-   .intranet-tile {
-      transition: none;
-   }
-}
-
-.intranet-assets .list-group-item {
-   font-size: 0.85rem;
-}
-
-.intranet-metric .card-body {
-   padding: 0.5rem 0.6rem !important;
-   gap: 0.5rem !important;
-}
-
-.intranet-metric-icon {
-   font-size: 1.4rem;
-}
-
-.intranet-metric-value {
-   font-size: 1.15rem;
-}
-
-.intranet-metric-label {
-   font-size: 0.72rem;
-}
-
-.intranet-panel h2.h6,
-.intranet-portal h2.h5 {
-   margin-bottom: 0.4rem !important;
-}
-
-.intranet-links-grid {
-   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-   gap: 0.5rem;
-}
-
-.intranet-tile {
-   padding: 0.6rem 0.4rem 0.5rem;
-   gap: 0.35rem;
-}
-
-.intranet-tile-icon {
-   width: 40px;
-   height: 40px;
-   font-size: 1.4rem;
-   border-radius: 0.75rem;
-}
-
-.intranet-tile-label {
-   font-size: 0.72rem;
-}
-
-.intranet-carousel-img {
-   max-height: 170px;
-}
-
-.intranet-announcements .list-group-item {
-   padding: 0.4rem 0.6rem;
-}
-
-.intranet-announcement-excerpt {
-   -webkit-line-clamp: 1;
-   max-height: 1.5em;
-}
-
-/* --- Small screens ------------------------------------------------------- */
-@media (max-width: 575.98px) {
-   .intranet-metric-icon {
-      font-size: 1.5rem;
-   }
-
-   .intranet-metric-value {
-      font-size: 1.25rem;
-   }
-
-   .intranet-portal .btn {
-      width: 100%;
-   }
-
-   .intranet-portal .d-flex.gap-2 .btn {
-      width: auto;
-   }
-}
-
-/* --- Reduced motion ------------------------------------------------------ */
-@media (prefers-reduced-motion: reduce) {
+   .intranet-tile,
    .intranet-metric {
       transition: none;
    }
+}
+
+/* ==========================================================================
+   Mobile sidebar overlay
+   ========================================================================== */
+.intranet-sidebar-overlay {
+   position: fixed;
+   inset: 0;
+   background: rgba(0,0,0,0.35);
+   opacity: 0;
+   visibility: hidden;
+   z-index: 1030;
+   transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.intranet-sidebar-overlay.show {
+   opacity: 1;
+   visibility: visible;
+}
+
+@media (min-width: 991.98px) {
+   .intranet-sidebar-overlay {
+      display: none;
+   }
+}
+
+/* ==========================================================================
+   Global horizontal overflow guard
+   ========================================================================== */
+.intranet-app,
+.intranet-app-body,
+.intranet-main,
+.intranet-board-compact {
+   max-width: 100%;
+   overflow-x: hidden;
+}
+
+/* ==========================================================================
+   Legacy / backward compatibility (kept for any old markup)
+   ========================================================================== */
+.intranet-panel .card-body > :last-child {
+   margin-bottom: 0;
+}
+
+.intranet-contact li {
+   overflow-wrap: break-word;
+}
+
+.intranet-assets {
+   max-height: 220px;
+   overflow-y: auto;
+}
+
+#intranet-announcement-body {
+   white-space: pre-wrap;
+   overflow-wrap: break-word;
 }

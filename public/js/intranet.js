@@ -126,31 +126,40 @@
    function initSidebarToggle() {
       var toggleBtn = document.querySelector('.intranet-sidebar-toggle');
       var sidebar = document.querySelector('.intranet-sidebar');
-      var appBody = document.querySelector('.intranet-app-body');
+      var overlay = document.getElementById('intranet-sidebar-overlay');
 
-      if (!toggleBtn || !sidebar || !appBody) {
+      if (!toggleBtn || !sidebar) {
          return;
       }
 
-      // Restore state from localStorage
-      var collapsed = localStorage.getItem('intranet_sidebar_collapsed') === 'true';
-      if (collapsed) {
-         sidebar.classList.add('collapsed');
-         appBody.classList.add('sidebar-collapsed');
+      // Create overlay for mobile if not exists
+      if (!overlay) {
+         overlay = document.createElement('div');
+         overlay.id = 'intranet-sidebar-overlay';
+         overlay.className = 'intranet-sidebar-overlay';
+         document.body.appendChild(overlay);
       }
 
+      // Mobile: toggle sidebar with overlay
       toggleBtn.addEventListener('click', function () {
-         var isCollapsed = sidebar.classList.toggle('collapsed');
-         appBody.classList.toggle('sidebar-collapsed');
-         localStorage.setItem('intranet_sidebar_collapsed', isCollapsed);
+         var isOpen = sidebar.classList.toggle('show');
+         overlay.classList.toggle('show', isOpen);
+         document.body.style.overflow = isOpen ? 'hidden' : '';
       });
 
-      // Mobile: click outside to close
-      document.addEventListener('click', function (event) {
-         if (window.innerWidth < 992 && sidebar.classList.contains('show')) {
-            if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target)) {
-               sidebar.classList.remove('show');
-            }
+      // Close on overlay click
+      overlay.addEventListener('click', function () {
+         sidebar.classList.remove('show');
+         overlay.classList.remove('show');
+         document.body.style.overflow = '';
+      });
+
+      // Close on Escape key
+      document.addEventListener('keydown', function (event) {
+         if (event.key === 'Escape' && sidebar.classList.contains('show')) {
+            sidebar.classList.remove('show');
+            overlay.classList.remove('show');
+            document.body.style.overflow = '';
          }
       });
    }
