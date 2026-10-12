@@ -677,9 +677,9 @@ class PluginIntranetConfig extends CommonGLPI {
                          </div>
                       <?php endif; ?>
                       <input type="file" class="form-control" id="link_image" name="image_file"
-                             accept=".png,.jpg,.jpeg,.gif,.webp,.svg,.ico,image/*">
+                             accept=".png,.jpg,.jpeg,.gif,.webp,.ico">
                       <div class="form-text">
-                         <?php echo __('PNG, JPG, GIF, WEBP, SVG or ICO, max 2 MB. Replaces the icon above when set.', 'intranet'); ?>
+                         <?php echo __('PNG, JPG, GIF, WEBP or ICO, max 2 MB. Replaces the icon above when set.', 'intranet'); ?>
                       </div>
                    </div>
                   <div class="col-12 col-md-3">

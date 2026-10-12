@@ -78,8 +78,11 @@ class PluginIntranetLink extends CommonDBTM {
     /** Max uploaded icon image size (2 MiB). */
     const IMAGE_MAX_SIZE = 2097152;
 
+    // NOTE: SVG is intentionally NOT allowed: an inline SVG served from the
+    // GLPI origin could execute embedded scripts (stored XSS). Raster images
+    // and ICO cannot carry executable content.
     /** Allowed uploaded icon image extensions (lowercase, no dot). */
-    const IMAGE_ALLOWED_EXT = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg', 'ico'];
+    const IMAGE_ALLOWED_EXT = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'ico'];
 
     /**
      * Directory where quick-link icon images are stored.
@@ -183,29 +186,20 @@ class PluginIntranetLink extends CommonDBTM {
        $ext = strtolower(pathinfo($orig, PATHINFO_EXTENSION));
        if (!in_array($ext, self::IMAGE_ALLOWED_EXT, true)) {
           Session::addMessageAfterRedirect(
-             __('Invalid image type. Use PNG, JPG, GIF, WEBP, SVG or ICO.', 'intranet'),
+             __('Invalid image type. Use PNG, JPG, GIF, WEBP or ICO.', 'intranet'),
              false,
              ERROR
           );
           return false;
        }
 
-       // Extra MIME check for raster images (SVG/ICO have no getimagesize signature).
-       if (in_array($ext, ['png', 'jpg', 'jpeg', 'gif', 'webp'], true)) {
+       // MIME check: the file must really be an image (ICO has no getimagesize
+       // signature, so it is accepted on extension alone after the checks above).
+       if ($ext !== 'ico') {
           $info = @getimagesize($upload['tmp_name']);
           if ($info === false || strpos((string)($info['mime'] ?? ''), 'image/') !== 0) {
              Session::addMessageAfterRedirect(
-                __('Invalid image type. Use PNG, JPG, GIF, WEBP, SVG or ICO.', 'intranet'),
-                false,
-                ERROR
-             );
-             return false;
-          }
-       } elseif ($ext === 'svg') {
-          $head = @file_get_contents($upload['tmp_name'], false, null, 0, 512);
-          if ($head === false || stripos($head, '<svg') === false) {
-             Session::addMessageAfterRedirect(
-                __('Invalid image type. Use PNG, JPG, GIF, WEBP, SVG or ICO.', 'intranet'),
+                __('Invalid image type. Use PNG, JPG, GIF, WEBP or ICO.', 'intranet'),
                 false,
                 ERROR
              );

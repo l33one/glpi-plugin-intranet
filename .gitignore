@@ -1,0 +1,32 @@
+# --- OS ------------------------------------------------------------------
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+.Trashes
+
+# --- Editors / IDEs ----------------------------------------------------------
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.bak
+nbproject/
+.project
+.settings/
+
+# --- PHP / logs / temp --------------------------------------------------------
+*.log
+*.tmp
+*.cache
+
+# --- GLPI runtime (nunca versionar dados do ambiente) --------------------------
+# Uploads de imagens dos links rápidos ficam em files/_plugins/intranet
+# dentro do GLPI, fora deste repositório.
+files/
+config_db.php
+
+# --- Build ---------------------------------------------------------------------
+node_modules/
+vendor/

@@ -59,9 +59,13 @@ $mime = [
    'jpeg' => 'image/jpeg',
    'gif'  => 'image/gif',
    'webp' => 'image/webp',
-   'svg'  => 'image/svg+xml',
    'ico'  => 'image/x-icon',
 ][$ext] ?? 'application/octet-stream';
+if ($mime === 'application/octet-stream') {
+   // Extension allow-list changed (e.g. legacy SVG): refuse to serve.
+   http_response_code(404);
+   exit;
+}
 
 header('Content-Type: ' . $mime);
 header('Content-Length: ' . filesize($path));

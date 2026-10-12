@@ -382,8 +382,8 @@ msgstr "Remover a imagem atual"
 msgid "Used when no image is uploaded."
 msgstr "Usado quando nenhuma imagem é enviada."
 
-msgid "PNG, JPG, GIF, WEBP, SVG or ICO, max 2 MB. Replaces the icon above when set."
-msgstr "PNG, JPG, GIF, WEBP, SVG ou ICO, máx. 2 MB. Substitui o ícone acima quando definida."
+msgid "PNG, JPG, GIF, WEBP or ICO, max 2 MB. Replaces the icon above when set."
+msgstr "PNG, JPG, GIF, WEBP ou ICO, máx. 2 MB. Substitui o ícone acima quando definida."
 
 msgid "Could not upload the image."
 msgstr "Não foi possível enviar a imagem."
@@ -391,5 +391,8 @@ msgstr "Não foi possível enviar a imagem."
 msgid "The image is too large (max 2 MB)."
 msgstr "A imagem é muito grande (máx. 2 MB)."
 
-msgid "Invalid image type. Use PNG, JPG, GIF, WEBP, SVG or ICO."
-msgstr "Tipo de imagem inválido. Use PNG, JPG, GIF, WEBP, SVG ou ICO."
+msgid "Invalid image type. Use PNG, JPG, GIF, WEBP or ICO."
+msgstr "Tipo de imagem inválido. Use PNG, JPG, GIF, WEBP ou ICO."
+
+msgid "GLPI version not compatible with plugin intranet"
+msgstr "Versão do GLPI incompatível com o plugin intranet"
