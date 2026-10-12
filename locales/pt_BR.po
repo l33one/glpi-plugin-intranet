@@ -396,3 +396,102 @@ msgstr "Tipo de imagem inválido. Use PNG, JPG, GIF, WEBP ou ICO."
 
 msgid "GLPI version not compatible with plugin intranet"
 msgstr "Versão do GLPI incompatível com o plugin intranet"
+
+msgid "Save the profile first to manage its intranet rights."
+msgstr "Salve o perfil primeiro para gerenciar seus direitos na intranet."
+
+msgid "No access"
+msgstr "Sem acesso"
+
+msgid "View"
+msgstr "Visualizar"
+
+msgid "The profile does not see the intranet."
+msgstr "O perfil não vê a intranet."
+
+msgid "Sees the Intranet tab, the portal, announcements and quick links."
+msgstr "Vê a aba Intranet, o portal, os avisos e os links rápidos."
+
+msgid "Additionally publishes announcements, links and banners."
+msgstr "Além disso publica avisos, links e banners."
+
+msgid "Profile not found."
+msgstr "Perfil não encontrado."
+
+msgid "Could not save the intranet rights."
+msgstr "Não foi possível salvar os direitos da intranet."
+
+msgid "Intranet rights saved successfully."
+msgstr "Direitos da intranet salvos com sucesso."
+
+msgid "Custom CSS (optional)"
+msgstr "CSS personalizado (opcional)"
+
+msgid "Extra styles applied to the intranet tab and portal, e.g. colors and banner sizes."
+msgstr "Estilos extras aplicados à aba intranet e ao portal, ex. cores e tamanhos de banner."
+
+msgid "Title (optional)"
+msgstr "Título (opcional)"
+
+msgid "Shown as a caption over the banner."
+msgstr "Exibido como legenda sobre o banner."
+
+msgid "Link URL (optional)"
+msgstr "URL de destino (opcional)"
+
+msgid "Where the banner points when clicked."
+msgstr "Para onde o banner aponta ao ser clicado."
+
+msgid "Banner image"
+msgstr "Imagem do banner"
+
+msgid "PNG, JPG, GIF, WEBP or ICO, max 2 MB. Wide images (e.g. 1200x300) look best."
+msgstr "PNG, JPG, GIF, WEBP ou ICO, máx. 2 MB. Imagens largas (ex. 1200x300) ficam melhores."
+
+msgid "Configured banners"
+msgstr "Banners configurados"
+
+msgid "No banners yet."
+msgstr "Nenhum banner ainda."
+
+msgid "Banner"
+msgstr "Banner"
+
+msgid "Delete this banner?"
+msgstr "Excluir este banner?"
+
+msgid "Banner deleted."
+msgstr "Banner excluído."
+
+msgid "Could not delete the banner."
+msgstr "Não foi possível excluir o banner."
+
+msgid "Banner saved successfully."
+msgstr "Banner salvo com sucesso."
+
+msgid "Could not save the banner."
+msgstr "Não foi possível salvar o banner."
+
+msgid "Banner not found."
+msgstr "Banner não encontrado."
+
+msgid "An image is required for the banner."
+msgstr "Uma imagem é obrigatória para o banner."
+
+msgid "New banner"
+msgstr "Novo banner"
+
+msgid "Edit banner"
+msgstr "Editar banner"
+
+msgid "Banners"
+msgstr "Banners"
+
+msgid "Edit my data"
+msgstr "Editar meus dados"
+
+msgid "Previous"
+msgstr "Anterior"
+
+msgid "Next"
+msgstr "Próximo"

@@ -89,13 +89,15 @@ class PluginIntranetPortal extends CommonGLPI {
       /** @var array $CFG_GLPI */
       global $CFG_GLPI;
 
-      echo '<div class="intranet-panel card mb-3" data-intranet-ajax="'
-         . self::esc($CFG_GLPI['root_doc'] . '/plugins/intranet/ajax/announcement.php') . '">';
-      echo '<div class="card-body">';
+       echo '<div class="intranet-panel card mb-3" data-intranet-ajax="'
+          . self::esc($CFG_GLPI['root_doc'] . '/plugins/intranet/ajax/announcement.php') . '">';
+       self::showCustomCss();
+       echo '<div class="card-body">';
 
-      if (PluginIntranetConfig::showGreeting()) {
-         self::showGreeting(true);
-      }
+       if (PluginIntranetConfig::showGreeting()) {
+          self::showGreeting(true);
+       }
+       self::showBanners('panel');
       if (PluginIntranetConfig::showMetrics()) {
          self::showMetrics();
       }
@@ -146,12 +148,14 @@ class PluginIntranetPortal extends CommonGLPI {
       }
       echo '</div>';
 
-      if (PluginIntranetConfig::showGreeting()) {
-         self::showGreeting(false);
-      }
-      if (PluginIntranetConfig::showMetrics()) {
-         self::showMetrics();
-      }
+       self::showCustomCss();
+       if (PluginIntranetConfig::showGreeting()) {
+          self::showGreeting(false);
+       }
+       self::showBanners('portal');
+       if (PluginIntranetConfig::showMetrics()) {
+          self::showMetrics();
+       }
 
       // Notice board with search + category filter
       $categories = PluginIntranetAnnouncement::getCategories();
@@ -200,6 +204,9 @@ class PluginIntranetPortal extends CommonGLPI {
      * the current user.
      */
     private static function showGreeting(bool $compact): void {
+       /** @var array $CFG_GLPI */
+       global $CFG_GLPI;
+
        $me = (int)Session::getLoginUserID();
 
        $hour = (int)date('G');
@@ -248,6 +255,9 @@ class PluginIntranetPortal extends CommonGLPI {
        self::contactLine('ti-user-check', __('Manager', 'intranet'), $contact['manager']);
        self::contactLine('ti-users', __('My groups', 'intranet'), $contact['groups']);
        echo '</ul>';
+       $pref_url = ($CFG_GLPI['root_doc'] ?? '') . '/front/preference.php';
+       echo '<div class="mt-2"><a class="btn btn-sm btn-outline-primary" href="' . self::esc($pref_url) . '">'
+          . '<i class="ti ti-pencil me-1"></i>' . self::esc(__('Edit my data', 'intranet')) . '</a></div>';
        echo '</div>';
 
        // Assets assigned to the current user.
@@ -476,18 +486,86 @@ class PluginIntranetPortal extends CommonGLPI {
        return $assets;
     }
 
-   /**
-    * Metric tiles. Ticket numbers only appear for profiles that can view
-    * tickets; the asset tile only for profiles that can view computers.
-    */
-   private static function showMetrics(): void {
+    /**
+     * Print the administrator-defined extra styles (sanitized on save).
+     */
+    private static function showCustomCss(): void {
+       $css = PluginIntranetConfig::getCustomCss();
+       if ($css === '') {
+          return;
+       }
+       echo '<style class="intranet-custom-css">' . $css . '</style>';
+    }
+
+    /**
+     * Carousel with the active banners (Bootstrap 5). Rendered only when at
+     * least one banner with a readable image exists.
+     *
+     * @param string $suffix Unique suffix for the carousel id
+     */
+    private static function showBanners(string $suffix): void {
+       $banners = PluginIntranetBanner::getVisible();
+       if (empty($banners)) {
+          return;
+       }
+       $id = 'intranet-carousel-' . preg_replace('/[^a-z0-9_-]/i', '', $suffix);
+       $multiple = count($banners) > 1;
+
+       echo '<div id="' . self::esc($id) . '" class="carousel slide intranet-carousel mb-3" data-bs-ride="carousel">';
+       if ($multiple) {
+          echo '<div class="carousel-indicators">';
+          foreach (array_keys($banners) as $i) {
+             echo '<button type="button" data-bs-target="#' . self::esc($id) . '" data-bs-slide-to="' . $i . '"'
+                . ($i === 0 ? ' class="active" aria-current="true"' : '')
+                . ' aria-label="Slide ' . ($i + 1) . '"></button>';
+          }
+          echo '</div>';
+       }
+       echo '<div class="carousel-inner">';
+       foreach ($banners as $i => $banner) {
+          $title = trim((string)($banner['title'] ?? ''));
+          $url = trim((string)($banner['url'] ?? ''));
+          echo '<div class="carousel-item' . ($i === 0 ? ' active' : '') . '">';
+          $img = '<img src="' . self::esc(PluginIntranetBanner::imageUrl($banner)) . '"'
+             . ' class="d-block w-100 intranet-carousel-img" alt="' . self::esc($title) . '">';
+          if ($url !== '') {
+             $external = PluginIntranetLink::isExternalUrl($url);
+             echo '<a href="' . self::esc($url) . '"'
+                . ($external ? ' target="_blank" rel="noopener"' : '') . '>' . $img . '</a>';
+          } else {
+             echo $img;
+          }
+          if ($title !== '') {
+             echo '<div class="carousel-caption d-none d-md-block intranet-carousel-caption">'
+                . '<span>' . self::esc($title) . '</span></div>';
+          }
+          echo '</div>';
+       }
+       echo '</div>';
+       if ($multiple) {
+          echo '<button class="carousel-control-prev" type="button" data-bs-target="#' . self::esc($id) . '" data-bs-slide="prev">'
+             . '<span class="carousel-control-prev-icon" aria-hidden="true"></span>'
+             . '<span class="visually-hidden">' . self::esc(__('Previous', 'intranet')) . '</span></button>';
+          echo '<button class="carousel-control-next" type="button" data-bs-target="#' . self::esc($id) . '" data-bs-slide="next">'
+             . '<span class="carousel-control-next-icon" aria-hidden="true"></span>'
+             . '<span class="visually-hidden">' . self::esc(__('Next', 'intranet')) . '</span></button>';
+       }
+       echo '</div>';
+    }
+
+    /**
+     * Metric tiles. Ticket numbers only appear for profiles that can view
+     * tickets; the asset tile only for profiles that can view computers.
+     */
+    private static function showMetrics(): void {
       $metrics = self::getMetrics();
       if (empty($metrics)) {
          return;
       }
-      echo '<div class="row g-2 mb-3 intranet-metrics">';
-      foreach ($metrics as $metric) {
-         echo '<div class="col-6 col-lg-3">';
+       echo '<div class="row g-2 mb-3 intranet-metrics">';
+       foreach ($metrics as $metric) {
+          // 2 rows of 3 cards on desktop, 3 rows of 2 on small screens.
+          echo '<div class="col-6 col-lg-4">';
          echo '<div class="intranet-metric card h-100"><div class="card-body d-flex align-items-center gap-3">';
          echo '<div class="intranet-metric-icon text-' . self::esc($metric['color']) . '">'
             . '<i class="' . self::esc($metric['icon']) . '"></i></div>';
@@ -792,20 +870,21 @@ class PluginIntranetPortal extends CommonGLPI {
          echo '<h2 class="h6 mt-3 mb-2"><i class="ti ti-link me-1"></i>'
             . PluginIntranetLink::getTypeName(2) . '</h2>';
       }
-       echo '<div class="d-flex flex-wrap gap-2 intranet-links">';
+       echo '<div class="intranet-links-grid">';
        foreach ($links as $link) {
           $external = PluginIntranetLink::isExternalUrl((string)$link['url']);
-          echo '<a class="btn btn-outline-secondary btn-sm intranet-link" href="' . self::esc($link['url']) . '"'
+          echo '<a class="intranet-tile" href="' . self::esc($link['url']) . '"'
+             . ' title="' . self::esc($link['name']) . '"'
              . ($external ? ' target="_blank" rel="noopener"' : '') . '>';
           if (PluginIntranetLink::hasImage($link)) {
-             echo '<img src="' . self::esc(PluginIntranetLink::imageUrl($link)) . '" alt=""'
-                . ' class="intranet-link-img me-1">';
+             echo '<span class="intranet-tile-icon"><img src="'
+                . self::esc(PluginIntranetLink::imageUrl($link)) . '" alt=""></span>';
           } else {
-             echo '<i class="' . self::esc($link['icon']) . ' me-1"></i>';
+             echo '<span class="intranet-tile-icon"><i class="' . self::esc($link['icon']) . '"></i></span>';
           }
-          echo self::esc($link['name']);
+          echo '<span class="intranet-tile-label">' . self::esc($link['name']) . '</span>';
           if ($external) {
-             echo ' <i class="ti ti-external-link intranet-link-external"></i>';
+             echo '<span class="intranet-tile-external"><i class="ti ti-external-link"></i></span>';
           }
           echo '</a>';
        }

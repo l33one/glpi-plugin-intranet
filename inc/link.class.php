@@ -137,14 +137,16 @@ class PluginIntranetLink extends CommonDBTM {
     }
 
     /**
-     * Validate and move an uploaded icon image.
+     * Validate and move an uploaded image (link icons and carousel banners
+     * share this routine; only the filename prefix differs).
      *
      * @param array       $upload   Single $_FILES entry (or empty array)
      * @param string|null $current  Currently stored filename (kept when no new file)
      * @param boolean     $remove   True when the "remove image" checkbox was ticked
+     * @param string      $prefix   Stored filename prefix ('link_' or 'banner_')
      * @return string|null|false New filename, null (keep removed), or false on error
      */
-    public static function handleUploadedImage($upload, ?string $current, bool $remove = false) {
+    public static function handleUploadedImage($upload, ?string $current, bool $remove = false, string $prefix = 'link_') {
        $current = trim((string)$current);
        if ($current !== '' && preg_match('#[\\\\/]#', $current)) {
           $current = '';
@@ -213,10 +215,11 @@ class PluginIntranetLink extends CommonDBTM {
           return false;
        }
 
+       $prefix = preg_match('/^[a-z]+_$/', $prefix) ? $prefix : 'link_';
        try {
-          $new = 'link_' . bin2hex(random_bytes(8)) . '.' . $ext;
+          $new = $prefix . bin2hex(random_bytes(8)) . '.' . $ext;
        } catch (\Throwable $e) {
-          $new = 'link_' . uniqid('', true) . '.' . $ext;
+          $new = $prefix . uniqid('', true) . '.' . $ext;
           $new = preg_replace('/[^a-zA-Z0-9_.-]/', '_', $new);
        }
 

@@ -4,7 +4,7 @@ Portal de intranet corporativa dentro do GLPI — aba própria na tela principal
 
 > **Corporate intranet portal for GLPI**: a dedicated tab on the main screen with a personalized greeting, profile contact info, assigned assets, personal ticket cards, a notice board and quick links (Tabler icon or uploaded image).
 
-- **Versão:** 1.1.0
+- **Versão:** 1.2.0
 - **Compatibilidade:** GLPI 10 e 11
 - **Idiomas:** English (`en_GB`), Português (`pt_BR`)
 - **Licença:** GPL-2.0-or-later
@@ -18,7 +18,9 @@ Portal de intranet corporativa dentro do GLPI — aba própria na tela principal
 | Meus ativos | Computadores, monitores, telefones, impressoras, periféricos e equipamentos de rede atribuídos ao usuário, com link direto |
 | Cards de chamados | Meus chamados abertos · Aguardando minha aprovação · Chamados que observo · Meus pendentes · Meus solucionados (não fechados) · Pesquisas de satisfação pendentes (últimos 7 dias) |
 | Mural de avisos | Categorias, fixação no topo, vigência (início/fim), busca e leitura em modal via AJAX |
-| Links rápidos | URL interna (`/front/...`) ou externa `http(s)`, ícone Tabler **ou imagem enviada** (PNG/JPG/GIF/WEBP/ICO, máx. 2 MB), ordenação e ativação |
+| Links rápidos | URL interna (`/front/...`) ou externa `http(s)`, ícone Tabler **ou imagem enviada** (PNG/JPG/GIF/WEBP/ICO, máx. 2 MB), ordenação e ativação, exibidos como cartões visuais |
+| Banners | Carrossel de banners com imagem, legenda e link opcional |
+| Personalização | CSS extra nas configurações para ajustar cores e tamanhos |
 | Portal completo | Página em Plugins → Intranet com busca e filtro por categoria |
 
 ## Instalação
@@ -26,7 +28,7 @@ Portal de intranet corporativa dentro do GLPI — aba própria na tela principal
 1. A pasta do plugin **precisa** se chamar `intranet`:
    `glpi/plugins/intranet/`
 2. No GLPI: Configuração → Plugins → **Intranet** → Instalar e Ativar.
-3. Dê o direito **Intranet (Leitura)** aos perfis que devem ver a aba e **Intranet (Atualização)** a quem vai gerenciar o conteúdo (em Administração → Perfis).
+3. Dê o direito aos perfis na aba **Intranet** do formulário do perfil (Administração → Perfis → perfil → aba Intranet): **Sem acesso**, **Visualizar** ou **Gerenciar conteúdo**.
 4. O conteúdo é gerenciado em Configuração → Plugins → **Intranet** (abas Geral, Avisos e Links).
 
 ## Upgrade (1.0.x → 1.1.0)
@@ -92,6 +94,13 @@ php tools/compile_locales.php # recompila os .mo após editar os .po
 ```
 
 ## Changelog
+
+### 1.2.0
+- Aba **Intranet** no formulário de Perfis para conceder visualização ou gerenciamento
+- Botão "Editar meus dados" leva às preferências do usuário; botão de configuração de volta à lista de plugins
+- Cards em grade 2×3; links rápidos como cartões visuais
+- **Banners em carrossel** com upload de imagem, legenda e link
+- Campo de **CSS personalizado** nas configurações
 
 ### 1.1.0
 - Intranet movida do dashboard para **aba própria** na tela principal

@@ -1,6 +1,6 @@
 <?php
 
-define('PLUGIN_INTRANET_VERSION', '1.1.0');
+define('PLUGIN_INTRANET_VERSION', '1.2.0');
 
 function plugin_init_intranet() {
    global $PLUGIN_HOOKS;
@@ -15,8 +15,13 @@ function plugin_init_intranet() {
    // injected into the dashboard anymore.
    $PLUGIN_HOOKS['menu_toadd']['intranet'] = ['plugins' => 'PluginIntranetMenu'];
 
+   // Wrench ("Configure") button on the Setup > Plugins list.
+   $PLUGIN_HOOKS['config_page']['intranet'] = 'front/config.php';
+
    Plugin::registerClass('PluginIntranetConfig');
    Plugin::registerClass('PluginIntranetCentral', ['addtabon' => ['Central']]);
+   // "Intranet" tab on the Profile form to grant view/manage rights.
+   Plugin::registerClass('PluginIntranetProfile', ['addtabon' => ['Profile']]);
 }
 
 function plugin_version_intranet() {

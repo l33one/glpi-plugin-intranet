@@ -29,13 +29,14 @@ class PluginIntranetConfig extends CommonGLPI {
     * Returns defaults when nothing is stored yet.
     */
    public static function load(): array {
-      $defaults = [
-         'show_panel'        => 1,
-         'show_greeting'     => 1,
-         'show_metrics'      => 1,
-         'show_links'        => 1,
-         'max_announcements' => 3,
-      ];
+       $defaults = [
+          'show_panel'        => 1,
+          'show_greeting'     => 1,
+          'show_metrics'      => 1,
+          'show_links'        => 1,
+          'max_announcements' => 3,
+          'custom_css'        => '',
+       ];
       $stored = \Config::getConfigurationValues(self::CONFIG_CONTEXT);
       $cfg = [];
       foreach (array_keys($defaults) as $key) {
@@ -49,8 +50,11 @@ class PluginIntranetConfig extends CommonGLPI {
    /**
     * Persist config through GLPI's configuration API.
     */
-   public static function save(array $data): bool {
-      $allowed = ['show_panel', 'show_greeting', 'show_metrics', 'show_links', 'max_announcements'];
+    public static function save(array $data): bool {
+       if (array_key_exists('custom_css', $data)) {
+          $data['custom_css'] = self::sanitizeCustomCss((string)$data['custom_css']);
+       }
+       $allowed = ['show_panel', 'show_greeting', 'show_metrics', 'show_links', 'max_announcements', 'custom_css'];
       $to_store = [];
       foreach ($allowed as $key) {
          if (array_key_exists($key, $data)) {
@@ -81,14 +85,31 @@ class PluginIntranetConfig extends CommonGLPI {
       return !empty($cfg['show_links']);
    }
 
-   public static function getMaxAnnouncements(): int {
-      $cfg = self::load();
-      $value = (int)($cfg['max_announcements'] ?? 3);
-      if ($value < 1) {
-         return 1;
-      }
-      return min(10, $value);
-   }
+    public static function getMaxAnnouncements(): int {
+       $cfg = self::load();
+       $value = (int)($cfg['max_announcements'] ?? 3);
+       if ($value < 1) {
+          return 1;
+       }
+       return min(10, $value);
+    }
+
+    public static function getCustomCss(): string {
+       $cfg = self::load();
+       return trim((string)($cfg['custom_css'] ?? ''));
+    }
+
+    /**
+     * Sanitize admin-provided CSS printed inside a <style> block: the only
+     * breakout vector is a closing </style> tag (plus legacy HTML comments),
+     * so those are stripped and the length is capped. Selectors containing
+     * ">" and quoted strings are preserved.
+     */
+    public static function sanitizeCustomCss(string $css): string {
+       $css = (string)preg_replace('#</\s*style[^>]*>#i', '', $css);
+       $css = str_replace(['<!--', '-->'], '', $css);
+       return trim(mb_substr($css, 0, 20000));
+    }
 
    public static function getTypeName($nb = 0) {
       return __('Intranet Configuration', 'intranet');
@@ -126,10 +147,11 @@ class PluginIntranetConfig extends CommonGLPI {
       if ($can_config) {
          $tabs['general'] = __('General', 'intranet');
       }
-      if ($can_manage) {
-         $tabs['announcements'] = PluginIntranetAnnouncement::getTypeName(2);
-         $tabs['links']         = PluginIntranetLink::getTypeName(2);
-      }
+       if ($can_manage) {
+          $tabs['announcements'] = PluginIntranetAnnouncement::getTypeName(2);
+          $tabs['links']         = PluginIntranetLink::getTypeName(2);
+          $tabs['banners']       = PluginIntranetBanner::getTypeName(2);
+       }
       if (empty($tabs)) {
          Html::displayRightError();
          return false;
@@ -188,9 +210,11 @@ class PluginIntranetConfig extends CommonGLPI {
             $this->showGeneralTab($self_url);
          } elseif ($tab === 'announcements' && $can_manage) {
             $this->showAnnouncementsTab($self_url);
-         } elseif ($tab === 'links' && $can_manage) {
-            $this->showLinksTab($self_url);
-         } else {
+          } elseif ($tab === 'links' && $can_manage) {
+             $this->showLinksTab($self_url);
+          } elseif ($tab === 'banners' && $can_manage) {
+             $this->showBannersTab($self_url);
+          } else {
             Html::displayRightError();
             return false;
          }
@@ -224,15 +248,16 @@ class PluginIntranetConfig extends CommonGLPI {
             if (!$can_config) {
                Html::displayRightError();
             }
-            $max = (int)($_POST['max_announcements'] ?? 3);
-            $max = min(10, max(1, $max));
-            self::save([
-               'show_panel'        => self::readSwitch('show_panel') ? 1 : 0,
-               'show_greeting'     => self::readSwitch('show_greeting') ? 1 : 0,
-               'show_metrics'      => self::readSwitch('show_metrics') ? 1 : 0,
-               'show_links'        => self::readSwitch('show_links') ? 1 : 0,
-               'max_announcements' => $max,
-            ]);
+             $max = (int)($_POST['max_announcements'] ?? 3);
+             $max = min(10, max(1, $max));
+             self::save([
+                'show_panel'        => self::readSwitch('show_panel') ? 1 : 0,
+                'show_greeting'     => self::readSwitch('show_greeting') ? 1 : 0,
+                'show_metrics'      => self::readSwitch('show_metrics') ? 1 : 0,
+                'show_links'        => self::readSwitch('show_links') ? 1 : 0,
+                'max_announcements' => $max,
+                'custom_css'        => $_POST['custom_css'] ?? '',
+             ]);
             self::flash(__('Configuration saved successfully.', 'intranet'), true);
             break;
 
@@ -274,6 +299,27 @@ class PluginIntranetConfig extends CommonGLPI {
                 self::flash(__('Link deleted.', 'intranet'), true);
              } else {
                 self::flash(__('Could not delete the link.', 'intranet'), false);
+             }
+             break;
+
+          case 'save_banner':
+             if (!$can_manage) {
+                Html::displayRightError();
+             }
+             $this->saveBanner();
+             break;
+
+          case 'delete_banner':
+             if (!$can_manage) {
+                Html::displayRightError();
+             }
+             $id = (int)($_POST['id'] ?? 0);
+             $banner = new PluginIntranetBanner();
+             // pre_deleteItem() removes the uploaded banner image file.
+             if ($id > 0 && $banner->getFromDB($id) && $banner->delete(['id' => $id], 1)) {
+                self::flash(__('Banner deleted.', 'intranet'), true);
+             } else {
+                self::flash(__('Could not delete the banner.', 'intranet'), false);
              }
              break;
       }
@@ -402,14 +448,26 @@ class PluginIntranetConfig extends CommonGLPI {
                   </label>
                </div>
 
-               <div class="mb-3" style="max-width: 220px;">
-                  <label for="max_announcements" class="form-label fw-semibold">
-                     <?php echo __('Announcements shown on the panel', 'intranet'); ?>
-                  </label>
-                  <input type="number" class="form-control" id="max_announcements"
-                         name="max_announcements" min="1" max="10"
-                         value="<?php echo self::getMaxAnnouncements(); ?>">
-               </div>
+                <div class="mb-3" style="max-width: 220px;">
+                   <label for="max_announcements" class="form-label fw-semibold">
+                      <?php echo __('Announcements shown on the panel', 'intranet'); ?>
+                   </label>
+                   <input type="number" class="form-control" id="max_announcements"
+                          name="max_announcements" min="1" max="10"
+                          value="<?php echo self::getMaxAnnouncements(); ?>">
+                </div>
+
+                <div class="mb-3">
+                   <label for="custom_css" class="form-label fw-semibold">
+                      <?php echo __('Custom CSS (optional)', 'intranet'); ?>
+                   </label>
+                   <textarea class="form-control font-monospace" id="custom_css" name="custom_css"
+                             rows="8" maxlength="20000" dir="ltr" spellcheck="false"
+                             placeholder=".intranet-panel { ... }"><?php echo self::esc(self::getCustomCss()); ?></textarea>
+                   <div class="form-text">
+                      <?php echo __('Extra styles applied to the intranet tab and portal, e.g. colors and banner sizes.', 'intranet'); ?>
+                   </div>
+                </div>
             </div>
          </div>
 
@@ -789,9 +847,224 @@ class PluginIntranetConfig extends CommonGLPI {
       <?php
    }
 
-   /**
-    * Extract the Y-m-d part of a datetime value for <input type="date">.
-    */
+    private function saveBanner(): void {
+       $id = (int)($_POST['id'] ?? 0);
+       $banner = new PluginIntranetBanner();
+       if ($id > 0 && !$banner->getFromDB($id)) {
+          self::flash(__('Banner not found.', 'intranet'), false);
+          return;
+       }
+       $current_image = ($id > 0) ? (string)($banner->fields['image'] ?? '') : '';
+       $remove_image = !empty($_POST['remove_image']);
+       $upload = $_FILES['image_file'] ?? [];
+       $image = PluginIntranetLink::handleUploadedImage($upload, $current_image, $remove_image, 'banner_');
+       if ($image === false) {
+          self::flash(__('Could not save the banner.', 'intranet'), false);
+          return;
+       }
+       // A new banner without an image is rejected by the model; surface the
+       // error here so the message is shown even before validation runs.
+       if (($id <= 0) && ($image === null || $image === '')) {
+          self::flash(__('An image is required for the banner.', 'intranet'), false);
+          return;
+       }
+       $input = [
+          'title'      => $_POST['title'] ?? '',
+          'url'        => $_POST['url'] ?? '',
+          'image'      => $image,
+          'sort_order' => $_POST['sort_order'] ?? 0,
+          'is_active'  => $_POST['is_active'] ?? 0,
+       ];
+       if ($id > 0) {
+          $input['id'] = $id;
+          if ($banner->update($input)) {
+             self::flash(__('Banner saved successfully.', 'intranet'), true);
+          } else {
+             self::flash(__('Could not save the banner.', 'intranet'), false);
+          }
+       } else {
+          if ($banner->add($input)) {
+             self::flash(__('Banner saved successfully.', 'intranet'), true);
+          } else {
+             self::flash(__('Could not save the banner.', 'intranet'), false);
+          }
+       }
+    }
+
+    private function showBannersTab(string $self_url): void {
+       $edit_id = (int)($_GET['edit'] ?? 0);
+       $editing = null;
+       if ($edit_id > 0) {
+          $candidate = new PluginIntranetBanner();
+          if ($candidate->getFromDB($edit_id)) {
+             $editing = $candidate->fields;
+          }
+       }
+       $rows = PluginIntranetBanner::getAllForManagement();
+       ?>
+       <div class="card mb-3">
+          <div class="card-header">
+             <i class="ti ti-carousel-horizontal me-1"></i>
+             <?php echo $editing ? __('Edit banner', 'intranet') : __('New banner', 'intranet'); ?>
+          </div>
+          <div class="card-body">
+             <form method="post" action="<?php echo $self_url; ?>" enctype="multipart/form-data">
+                <?php echo Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]); ?>
+                <input type="hidden" name="intranet_action" value="save_banner">
+                <?php if ($editing): ?>
+                   <input type="hidden" name="id" value="<?php echo (int)$editing['id']; ?>">
+                <?php endif; ?>
+
+                <div class="row g-3">
+                   <div class="col-12 col-lg-6">
+                      <label for="banner_title" class="form-label fw-semibold">
+                         <?php echo __('Title (optional)', 'intranet'); ?>
+                      </label>
+                      <input type="text" class="form-control" id="banner_title" name="title"
+                             maxlength="255"
+                             value="<?php echo self::esc($editing['title'] ?? ''); ?>">
+                      <div class="form-text">
+                         <?php echo __('Shown as a caption over the banner.', 'intranet'); ?>
+                      </div>
+                   </div>
+                   <div class="col-12 col-lg-6">
+                      <label for="banner_url" class="form-label fw-semibold">
+                         <?php echo __('Link URL (optional)', 'intranet'); ?>
+                      </label>
+                      <input type="text" class="form-control" id="banner_url" name="url"
+                             maxlength="1024" dir="ltr" placeholder="https://... /front/..."
+                             value="<?php echo self::esc($editing['url'] ?? ''); ?>">
+                      <div class="form-text">
+                         <?php echo __('Where the banner points when clicked.', 'intranet'); ?>
+                      </div>
+                   </div>
+                   <div class="col-12">
+                      <label for="banner_image" class="form-label fw-semibold">
+                         <?php echo __('Banner image', 'intranet'); ?>
+                      </label>
+                      <?php if (!empty($editing['image']) && PluginIntranetBanner::hasImage($editing)): ?>
+                         <div class="mb-2">
+                            <img src="<?php echo self::esc(PluginIntranetBanner::imageUrl($editing)); ?>"
+                                 alt="" class="img-fluid rounded intranet-banner-preview">
+                         </div>
+                         <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="banner_remove_image"
+                                   name="remove_image" value="1">
+                            <label class="form-check-label" for="banner_remove_image">
+                               <?php echo __('Remove the current image', 'intranet'); ?>
+                            </label>
+                         </div>
+                      <?php endif; ?>
+                      <input type="file" class="form-control" id="banner_image" name="image_file"
+                             accept=".png,.jpg,.jpeg,.gif,.webp,.ico" <?php echo $editing ? '' : 'required'; ?>>
+                      <div class="form-text">
+                         <?php echo __('PNG, JPG, GIF, WEBP or ICO, max 2 MB. Wide images (e.g. 1200x300) look best.', 'intranet'); ?>
+                      </div>
+                   </div>
+                   <div class="col-12 col-md-6" style="max-width: 220px;">
+                      <label for="banner_order" class="form-label fw-semibold">
+                         <?php echo __('Order', 'intranet'); ?>
+                      </label>
+                      <input type="number" class="form-control" id="banner_order" name="sort_order"
+                             min="0" max="9999" value="<?php echo (int)($editing['sort_order'] ?? 0); ?>">
+                   </div>
+                   <div class="col-12 col-md-6 d-flex align-items-end">
+                      <div class="form-check form-switch mb-2">
+                         <input class="form-check-input" type="checkbox" role="switch"
+                                id="banner_active" name="is_active" value="1"
+                                <?php echo ($editing === null || !empty($editing['is_active'])) ? 'checked' : ''; ?>>
+                         <label class="form-check-label fw-semibold" for="banner_active">
+                            <?php echo __('Active', 'intranet'); ?>
+                         </label>
+                      </div>
+                   </div>
+                </div>
+
+                <div class="mt-3 d-flex gap-2">
+                   <button type="submit" class="btn btn-primary">
+                      <i class="ti ti-device-floppy me-1"></i>
+                      <?php echo __('Save', 'intranet'); ?>
+                   </button>
+                   <?php if ($editing): ?>
+                      <a class="btn btn-outline-secondary"
+                         href="<?php echo PluginIntranetPortal::configUrl(['tab' => 'banners']); ?>">
+                         <?php echo __('Cancel', 'intranet'); ?>
+                      </a>
+                   <?php endif; ?>
+                </div>
+             </form>
+          </div>
+       </div>
+
+       <div class="card">
+          <div class="card-header">
+             <i class="ti ti-list me-1"></i>
+             <?php echo __('Configured banners', 'intranet'); ?>
+          </div>
+          <div class="card-body p-0">
+             <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0">
+                   <thead>
+                      <tr>
+                         <th><?php echo __('Banner', 'intranet'); ?></th>
+                         <th><?php echo __('Status', 'intranet'); ?></th>
+                         <th><?php echo __('Actions', 'intranet'); ?></th>
+                      </tr>
+                   </thead>
+                   <tbody>
+                      <?php if (empty($rows)): ?>
+                         <tr>
+                            <td colspan="3" class="text-center text-muted py-3">
+                               <?php echo __('No banners yet.', 'intranet'); ?>
+                            </td>
+                         </tr>
+                      <?php endif; ?>
+                      <?php foreach ($rows as $row): ?>
+                         <tr>
+                            <td>
+                               <?php if (PluginIntranetBanner::hasImage($row)): ?>
+                                  <img src="<?php echo self::esc(PluginIntranetBanner::imageUrl($row)); ?>"
+                                       alt="" class="intranet-banner-thumb me-2">
+                               <?php endif; ?>
+                               <?php echo self::esc($row['title'] !== '' ? $row['title'] : '#' . (int)$row['id']); ?>
+                            </td>
+                            <td>
+                               <?php if (!empty($row['is_active'])): ?>
+                                  <span class="badge bg-success"><?php echo __('Active', 'intranet'); ?></span>
+                               <?php else: ?>
+                                  <span class="badge bg-secondary"><?php echo __('Inactive', 'intranet'); ?></span>
+                               <?php endif; ?>
+                            </td>
+                            <td class="text-nowrap">
+                               <a class="btn btn-sm btn-outline-primary"
+                                  href="<?php echo PluginIntranetPortal::configUrl(['tab' => 'banners', 'edit' => (int)$row['id']]); ?>">
+                                  <i class="ti ti-pencil"></i>
+                                  <span class="d-none d-lg-inline"><?php echo __('Edit', 'intranet'); ?></span>
+                               </a>
+                               <form method="post" action="<?php echo $self_url; ?>" class="d-inline"
+                                     data-intranet-confirm="<?php echo self::esc(__('Delete this banner?', 'intranet')); ?>">
+                                  <?php echo Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]); ?>
+                                  <input type="hidden" name="intranet_action" value="delete_banner">
+                                  <input type="hidden" name="id" value="<?php echo (int)$row['id']; ?>">
+                                  <button type="submit" class="btn btn-sm btn-outline-danger">
+                                     <i class="ti ti-trash"></i>
+                                     <span class="d-none d-lg-inline"><?php echo __('Delete', 'intranet'); ?></span>
+                                  </button>
+                               </form>
+                            </td>
+                         </tr>
+                      <?php endforeach; ?>
+                   </tbody>
+                </table>
+             </div>
+          </div>
+       </div>
+       <?php
+    }
+
+    /**
+     * Extract the Y-m-d part of a datetime value for <input type="date">.
+     */
    private static function datePart($value): string {
       $value = (string)($value ?? '');
       if (preg_match('/^(\d{4}-\d{2}-\d{2})/', $value, $m)) {

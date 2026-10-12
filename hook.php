@@ -104,6 +104,29 @@ function plugin_intranet_install() {
         );
     }
 
+    // Carousel banners (1.2.0).
+    if (!$DB->tableExists('glpi_plugin_intranet_banners')) {
+        $migration->addPreQuery(
+            "CREATE TABLE `glpi_plugin_intranet_banners` (
+                `id` int unsigned NOT NULL AUTO_INCREMENT,
+                `title` varchar(255) DEFAULT NULL,
+                `image` varchar(255) DEFAULT NULL,
+                `url` varchar(1024) DEFAULT NULL,
+                `sort_order` int NOT NULL DEFAULT '0',
+                `is_active` tinyint(1) NOT NULL DEFAULT '1',
+                `date_creation` timestamp NULL DEFAULT NULL,
+                `date_mod` timestamp NULL DEFAULT NULL,
+                PRIMARY KEY (`id`),
+                KEY `is_active` (`is_active`),
+                KEY `sort_order` (`sort_order`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC",
+            PLUGIN_INTRANET_VERSION . ' create glpi_plugin_intranet_banners'
+        );
+    } else {
+        $migration->addKey('glpi_plugin_intranet_banners', 'is_active');
+        $migration->addKey('glpi_plugin_intranet_banners', 'sort_order');
+    }
+
     $migration->executeMigration();
 
     // Seed starter content so the portal is useful immediately after install.
@@ -179,20 +202,20 @@ function plugin_intranet_uninstall() {
     // Remove config values stored through GLPI's configuration API
     \Config::deleteConfigurationValues('plugin:intranet');
 
-    // Drop the plugin tables (announcements and links belong to the plugin;
-    // removing them keeps the database clean after an uninstall).
-    foreach (['glpi_plugin_intranet_announcements', 'glpi_plugin_intranet_links'] as $table) {
+    // Drop the plugin tables (announcements, links and banners belong to the
+    // plugin; removing them keeps the database clean after an uninstall).
+    foreach (['glpi_plugin_intranet_announcements', 'glpi_plugin_intranet_links', 'glpi_plugin_intranet_banners'] as $table) {
         if ($DB->tableExists($table)) {
             $DB->query("DROP TABLE `" . $table . "`");
         }
     }
 
-    // Remove uploaded quick-link icon images.
+    // Remove uploaded images (quick-link icons and carousel banners).
     $docdir = (defined('GLPI_PLUGIN_DOC_DIR')
         ? GLPI_PLUGIN_DOC_DIR
         : ((defined('GLPI_DOC_DIR') ? GLPI_DOC_DIR : '') . '/_plugins')) . '/intranet';
     if (is_dir($docdir)) {
-        foreach (glob($docdir . '/link_*') ?: [] as $file) {
+        foreach (glob($docdir . '/{link_,banner_}*', GLOB_BRACE) ?: [] as $file) {
             if (is_file($file)) {
                 @unlink($file);
             }

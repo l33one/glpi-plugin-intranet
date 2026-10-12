@@ -5,7 +5,8 @@
  * GLPI Intranet Plugin
  * -------------------------------------------------------------------------
  *
- * Serves an uploaded quick-link icon image.
+ * Serves an uploaded image: a quick-link icon (?link=<id>) or a carousel
+ * banner (?banner=<id>).
  *
  * @package   Plugin Intranet
  * @author    Leewan Meneses
@@ -23,24 +24,29 @@ if (!PluginIntranetPortal::canView()) {
    Html::displayRightError();
 }
 
+$file = '';
 $link_id = (int)($_GET['link'] ?? 0);
-if ($link_id <= 0) {
+$banner_id = (int)($_GET['banner'] ?? 0);
+
+if ($link_id > 0) {
+   $link = new PluginIntranetLink();
+   if (!$link->getFromDB($link_id) || empty($link->fields['is_active'])) {
+      http_response_code(404);
+      exit;
+   }
+   $file = trim((string)($link->fields['image'] ?? ''));
+} elseif ($banner_id > 0) {
+   $banner = new PluginIntranetBanner();
+   if (!$banner->getFromDB($banner_id) || empty($banner->fields['is_active'])) {
+      http_response_code(404);
+      exit;
+   }
+   $file = trim((string)($banner->fields['image'] ?? ''));
+} else {
    http_response_code(404);
    exit;
 }
 
-$link = new PluginIntranetLink();
-if (!$link->getFromDB($link_id)) {
-   http_response_code(404);
-   exit;
-}
-
-if (empty($link->fields['is_active'])) {
-   http_response_code(404);
-   exit;
-}
-
-$file = trim((string)($link->fields['image'] ?? ''));
 if ($file === '' || preg_match('#[\\\\/]#', $file)) {
    http_response_code(404);
    exit;
