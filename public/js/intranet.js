@@ -3,17 +3,15 @@
  * GLPI Intranet Plugin
  * -------------------------------------------------------------------------
  *
+ * Vanilla JS (no extra dependency): delete confirmations, announcement
+ * reader modal, and sidebar toggle.
+ *
  * @package   Plugin Intranet
  * @author    Leewan Meneses
  * @license   GPL-2.0+
  * @since     2026
  *
  * -------------------------------------------------------------------------
- *
- * Vanilla JS (no extra dependency): delete confirmations and the announcement
- * reader modal. Every block is defensive - the file is loaded on all GLPI
- * pages through the add_javascript hook, so it must no-op where no intranet
- * markup exists.
  */
 (function () {
    'use strict';
@@ -47,6 +45,7 @@
       });
 
       initAnnouncementReader();
+      initSidebarToggle();
    });
 
    function initAnnouncementReader() {
@@ -116,14 +115,44 @@
                meta.push(ann.author);
             }
             setText(metaEl, meta.join(' · '));
-            // Plain text only: textContent can never execute markup, and the
-            // server stores no HTML for announcements.
             setText(bodyEl, ann.content || '');
          })
          .catch(function () {
             setText(titleEl, '');
             setText(bodyEl, 'Error');
          });
+   }
+
+   function initSidebarToggle() {
+      var toggleBtn = document.querySelector('.intranet-sidebar-toggle');
+      var sidebar = document.querySelector('.intranet-sidebar');
+      var appBody = document.querySelector('.intranet-app-body');
+
+      if (!toggleBtn || !sidebar || !appBody) {
+         return;
+      }
+
+      // Restore state from localStorage
+      var collapsed = localStorage.getItem('intranet_sidebar_collapsed') === 'true';
+      if (collapsed) {
+         sidebar.classList.add('collapsed');
+         appBody.classList.add('sidebar-collapsed');
+      }
+
+      toggleBtn.addEventListener('click', function () {
+         var isCollapsed = sidebar.classList.toggle('collapsed');
+         appBody.classList.toggle('sidebar-collapsed');
+         localStorage.setItem('intranet_sidebar_collapsed', isCollapsed);
+      });
+
+      // Mobile: click outside to close
+      document.addEventListener('click', function (event) {
+         if (window.innerWidth < 992 && sidebar.classList.contains('show')) {
+            if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target)) {
+               sidebar.classList.remove('show');
+            }
+         }
+      });
    }
 
    function setText(el, text) {

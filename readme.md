@@ -4,7 +4,7 @@ Portal de intranet corporativa dentro do GLPI — aba própria na tela principal
 
 > **Corporate intranet portal for GLPI**: a dedicated tab on the main screen with a personalized greeting, profile contact info, assigned assets, personal ticket cards, a notice board and quick links (Tabler icon or uploaded image).
 
-- **Versão:** 1.4.0
+- **Versão:** 1.5.0
 - **Compatibilidade:** GLPI 10 e 11
 - **Idiomas:** English (`en_GB`), Português (`pt_BR`)
 - **Licença:** GPL-2.0-or-later
@@ -94,6 +94,10 @@ php tools/compile_locales.php # recompila os .mo após editar os .po
 ```
 
 ## Changelog
+
+### 1.5.0
+- Layout completo estilo dashboard: navbar fixa (hamburger, busca, avatar + ações), sidebar colapsável com faixa de navegação e painel principal (logo + tiles), área de conteúdo com hero banner (carrossel), cards de métricas em linha única, formulários + pesquisas lado a lado, avisos abaixo
+- Persistência do estado da sidebar (localStorage), responsivo mobile (sidebar off-canvas)
 
 ### 1.4.0
 - Novo layout em 2 colunas: barra lateral com logo do GLPI, links 2 por linha e ativos

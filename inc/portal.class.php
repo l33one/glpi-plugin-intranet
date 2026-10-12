@@ -77,75 +77,143 @@ class PluginIntranetPortal extends CommonGLPI {
      * @param mixed $data Hook payload (unused)
      * @return void
      */
-    public static function showCentralPanel($data = null) {
-       return;
+public static function showCentralPanel($data = null) {
+        return;
+     }
+
+    /**
+     * Intranet panel for the main screen "Intranet" tab (Central).
+     * Uses the new layout with fixed navbar, sidebar and structured content.
+     */
+    public static function showPanel(int $max_announcements = 3): void {
+       /** @var array $CFG_GLPI */
+       global $CFG_GLPI;
+
+       echo '<div class="intranet-app" data-intranet-ajax="'
+          . self::esc($CFG_GLPI['root_doc'] . '/plugins/intranet/ajax/announcement.php') . '">';
+       self::showCustomCss();
+       self::showNavbar();
+       echo '<div class="intranet-app-body">';
+       self::showSidebar();
+       echo '<main class="intranet-main">';
+       self::showBanners('panel');
+       self::showBoardCompact(false, $max_announcements);
+       echo '</main>';
+       echo '</div>';
+       echo '</div>';
+       self::showReaderModal();
     }
 
     /**
-     * Intranet panel for the main screen "Intranet" tab (Central) and for the
-     * full portal page.
+     * Full portal page (Plugins > Intranet) with the same app layout.
      */
-    public static function showPanel(int $max_announcements = 3): void {
-      /** @var array $CFG_GLPI */
-      global $CFG_GLPI;
+    public static function showPortal(): void {
+       /** @var array $CFG_GLPI */
+       global $CFG_GLPI;
 
-       echo '<div class="intranet-panel card mb-3" data-intranet-ajax="'
+       $category = $_GET['cat'] ?? '';
+       if (!is_string($category) || !array_key_exists($category, PluginIntranetAnnouncement::getCategories())) {
+          $category = '';
+       }
+       $search = $_GET['q'] ?? '';
+       if (!is_string($search)) {
+          $search = '';
+       }
+       $search = trim(mb_substr($search, 0, 100));
+
+       echo '<div class="intranet-app" data-intranet-ajax="'
           . self::esc($CFG_GLPI['root_doc'] . '/plugins/intranet/ajax/announcement.php') . '">';
        self::showCustomCss();
-       echo '<div class="card-body">';
-
-       self::showBanners('panel');
-       self::showBoard(false, $max_announcements);
-
-       echo '<div class="mt-2 d-flex flex-wrap gap-2">';
-      echo '<a class="btn btn-sm btn-outline-primary" href="' . self::esc(self::portalUrl()) . '">'
-         . '<i class="ti ti-home me-1"></i>' . __('Open the intranet portal', 'intranet') . '</a>';
-      if (self::canManage()) {
-         echo '<a class="btn btn-sm btn-outline-secondary" href="' . self::esc(self::configUrl()) . '">'
-            . '<i class="ti ti-settings me-1"></i>' . __('Manage content', 'intranet') . '</a>';
-      }
-      echo '</div>';
-
-      echo '</div>';
-      echo '</div>';
-      self::showReaderModal();
-   }
-
-   /**
-    * Full portal page (Plugins > Intranet).
-    */
-   public static function showPortal(): void {
-      /** @var array $CFG_GLPI */
-      global $CFG_GLPI;
-
-      $category = $_GET['cat'] ?? '';
-      if (!is_string($category) || !array_key_exists($category, PluginIntranetAnnouncement::getCategories())) {
-         $category = '';
-      }
-      $search = $_GET['q'] ?? '';
-      if (!is_string($search)) {
-         $search = '';
-      }
-      $search = trim(mb_substr($search, 0, 100));
-
-      echo '<div class="intranet-portal container-fluid py-4" data-intranet-ajax="'
-         . self::esc($CFG_GLPI['root_doc'] . '/plugins/intranet/ajax/announcement.php') . '">';
-
-       echo '<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">';
-      echo '<h1 class="h3 mb-0"><i class="ti ti-home me-1"></i>' . __('Intranet Portal', 'intranet') . '</h1>';
-      if (self::canManage()) {
-         echo '<a class="btn btn-outline-secondary" href="' . self::esc(self::configUrl()) . '">'
-            . '<i class="ti ti-settings me-1"></i>' . __('Manage content', 'intranet') . '</a>';
-      }
-      echo '</div>';
-
-       self::showCustomCss();
+       self::showNavbar(true);
+       echo '<div class="intranet-app-body">';
+       self::showSidebar();
+       echo '<main class="intranet-main">';
        self::showBanners('portal');
-       self::showBoard(true, 0, $category, $search);
-
+       self::showBoardCompact(true, 0, $category, $search);
+       echo '</main>';
+       echo '</div>';
        echo '</div>';
        self::showReaderModal();
-   }
+    }
+
+    /**
+     * Fixed top navbar: hamburger, home/title, search, avatar + actions.
+     *
+     * @param boolean $is_portal True when rendering the full portal page
+     */
+    private static function showNavbar(bool $is_portal = false): void {
+       /** @var array $CFG_GLPI */
+       global $CFG_GLPI;
+
+       $me = (int)Session::getLoginUserID();
+       $user = new User();
+       $user->getFromDB($me);
+       $first = trim((string)($user->fields['firstname'] ?? ''));
+       if ($first === '') {
+          $first = trim((string)($user->fields['name'] ?? ''));
+       }
+       $avatar = ($me > 0 && !empty($user->fields['picture']))
+          ? self::getUserAvatar($user->fields)
+          : '';
+
+       $portal_url = self::portalUrl();
+       $pref_url = ($CFG_GLPI['root_doc'] ?? '') . '/front/preference.php';
+       $config_url = self::configUrl();
+
+       echo '<nav class="intranet-navbar navbar navbar-expand-lg navbar-light bg-light border-bottom">';
+       echo '<div class="container-fluid">';
+
+       // Left: hamburger + home + title
+       echo '<button class="btn btn-link text-dark p-2 intranet-sidebar-toggle" type="button" aria-label="'
+          . self::esc(__('Toggle sidebar', 'intranet')) . '"><i class="ti ti-menu-2"></i></button>';
+       echo '<a class="navbar-brand d-flex align-items-center gap-2 px-0" href="' . self::esc($portal_url) . '">';
+       echo '<i class="ti ti-home text-primary fs-4"></i>';
+       echo '<span class="fw-semibold d-none d-md-inline">' . self::esc(__('Intranet', 'intranet')) . '</span>';
+       echo '</a>';
+
+       // Center: search (desktop only, hidden on mobile)
+       echo '<div class="intranet-nav-search d-none d-lg-flex flex-grow-1 mx-4">';
+       echo '<form class="w-100" action="' . self::esc($portal_url) . '" method="get">';
+       echo '<div class="input-group">';
+       echo '<input type="search" class="form-control rounded-start" name="q" placeholder="'
+          . self::esc(__('Search announcements...', 'intranet')) . '" value="">';
+       echo '<button class="btn btn-outline-secondary rounded-end" type="submit"><i class="ti ti-search"></i></button>';
+       echo '</div>';
+       echo '</form>';
+       echo '</div>';
+
+       // Right: avatar + name + icons + manage
+       echo '<div class="d-flex align-items-center gap-2 ms-auto">';
+       if ($is_portal && self::canManage()) {
+          echo '<a class="btn btn-sm btn-outline-primary d-none d-lg-inline-flex" href="' . self::esc($config_url) . '">'
+             . '<i class="ti ti-settings me-1"></i>' . self::esc(__('Manage content', 'intranet')) . '</a>';
+       }
+       echo '<div class="btn-group">';
+       echo '<a class="btn btn-link text-dark p-2" href="#" data-bs-toggle="dropdown" aria-expanded="false">';
+       if ($avatar !== '') {
+          echo '<img src="' . self::esc($avatar) . '" alt="" class="intranet-nav-avatar">';
+       } else {
+          echo '<i class="ti ti-user-circle fs-4 text-muted"></i>';
+       }
+       if ($first !== '') {
+          echo '<span class="ms-1 d-none d-md-inline fw-medium">' . self::esc($first) . '</span>';
+       }
+       echo '</a>';
+       echo '<ul class="dropdown-menu dropdown-menu-end">';
+       echo '<li><a class="dropdown-item" href="' . self::esc($pref_url) . '"><i class="ti ti-user-cog me-2"></i>'
+          . self::esc(__('My settings', 'intranet')) . '</a></li>';
+       echo '<li><a class="dropdown-item" href="' . self::esc($portal_url) . '"><i class="ti ti-home me-2"></i>'
+          . self::esc(__('Open the intranet portal', 'intranet')) . '</a></li>';
+       echo '<li><hr class="dropdown-divider"></li>';
+       echo '<li><a class="dropdown-item" href="' . ($CFG_GLPI['root_doc'] ?? '') . '/front/logout.php"><i class="ti ti-logout me-2"></i>'
+          . self::esc(__('Logout', 'intranet')) . '</a></li>';
+       echo '</ul>';
+       echo '</div>';
+       echo '</div>';
+
+       echo '</div>';
+       echo '</nav>';
+    }
 
     /**
      * Greeting bar: user photo, welcome message with the current date on one
@@ -210,38 +278,35 @@ class PluginIntranetPortal extends CommonGLPI {
        echo '</div></div>';
     }
 
-    /**
-     * One inline contact value (icon + text) for the greeting bar.
-     *
-     * @param string       $icon
-     * @param array|string $value
-     */
-    private static function contactInline(string $icon, $value): void {
-       if (is_array($value)) {
-          $value = array_values(array_filter(array_map('trim', array_map('strval', $value))));
-          if (empty($value)) {
-             return;
-          }
-          $value = implode(' · ', $value);
-       }
-       $value = trim((string)$value);
-       if ($value === '') {
-          return;
-       }
-       echo '<div class="intranet-hello-line"><i class="ti ' . self::esc($icon) . ' me-1 text-muted"></i>'
-          . self::esc($value) . '</div>';
-    }
+/**
+      * One inline contact value (icon + text) for the greeting bar.
+      *
+      * @param string       $icon
+      * @param array|string $value
+      */
+     private static function contactInline(string $icon, $value): void {
+        if (is_array($value)) {
+           $value = array_values(array_filter(array_map('trim', array_map('strval', $value))));
+           if (empty($value)) {
+              return;
+           }
+           $value = implode(' · ', $value);
+        }
+        $value = trim((string)$value);
+        if ($value === '') {
+           return;
+        }
+        echo '<div class="intranet-hello-line"><i class="ti ' . self::esc($icon) . ' me-1 text-muted"></i>'
+           . self::esc($value) . '</div>';
+     }
 
     /**
-     * Layout board: sidebar (logo + quick links + assets) beside the main
-     * column (greeting bar, ticket cards, forms, saved searches, notices).
+     * Compact board for the new layout: main column only (sidebar is separate).
+     * Contains: greeting bar (if enabled), metrics row (if enabled), forms + saved searches row,
+     * then announcements or notice board.
      */
-    private static function showBoard(bool $portal, int $max_announcements = 3, string $category = '', string $search = ''): void {
-       echo '<div class="row g-2 intranet-board">';
-       echo '<div class="col-12 col-xl-3">';
-       self::showSidebar();
-       echo '</div>';
-       echo '<div class="col-12 col-xl-9">';
+    private static function showBoardCompact(bool $portal, int $max_announcements = 3, string $category = '', string $search = ''): void {
+       echo '<div class="intranet-board-compact">';
        if (PluginIntranetConfig::showGreeting()) {
           self::showGreeting(true);
        }
@@ -262,32 +327,58 @@ class PluginIntranetPortal extends CommonGLPI {
           self::showAnnouncements($max_announcements, true);
        }
        echo '</div>';
-       echo '</div>';
     }
 
     /**
-     * Sidebar: GLPI logo on the header, quick links (2 icons per row) and a
-     * compact list of the assets assigned to the current user.
+     * Sidebar with two areas:
+     * 1. Thin left strip with stacked navigation icons (always visible)
+     * 2. Main panel with GLPI logo + quick links (2 per row) + compact assets
      */
     private static function showSidebar(): void {
        $me = (int)Session::getLoginUserID();
+       $portal_url = self::portalUrl();
 
-       echo '<div class="card mb-2 intranet-sidebar"><div class="card-body">';
+       echo '<aside class="intranet-sidebar">';
+       // Thin navigation strip (always visible)
+       echo '<nav class="intranet-nav-strip" aria-label="Navegação principal">';
+       $nav_items = [
+          ['ti ti-chart-bar', 'Dashboard', $portal_url],
+          ['ti ti-file-text', 'Formulários', $portal_url . '#forms'],
+          ['ti ti-device-desktop', 'Ativos', $portal_url . '#assets'],
+          ['ti ti-users', 'Usuários', $portal_url . '#users'],
+          ['ti ti-chart-pie', 'Relatórios', $portal_url . '#reports'],
+          ['ti ti-settings', 'Configurações', self::configUrl()],
+       ];
+       foreach ($nav_items as $item) {
+          echo '<a class="intranet-nav-item" href="' . self::esc($item[2]) . '" title="' . self::esc($item[1]) . '">'
+             . '<i class="' . self::esc($item[0]) . '"></i></a>';
+       }
+       // Quick access colored dots at bottom
+       echo '<div class="intranet-nav-quick">';
+       echo '<span class="intranet-quick-dot" style="background:#206bc4" title="Dashboard"></span>';
+       echo '<span class="intranet-quick-dot" style="background:#37c97a" title="Novo chamado"></span>';
+       echo '<span class="intranet-quick-dot" style="background:#f5a623" title="Base de conhecimento"></span>';
+       echo '<span class="intranet-quick-dot" style="background:#e74c3c" title="Alertas"></span>';
+       echo '</div>';
+       echo '</nav>';
+
+       // Main sidebar panel (collapsible content)
+       echo '<div class="intranet-sidebar-panel">';
        $logo = self::getGlpiLogo();
        if ($logo !== '') {
-          echo '<div class="intranet-logo"><img src="' . self::esc($logo) . '" alt="GLPI"></div>';
+          echo '<div class="intranet-sidebar-logo"><img src="' . self::esc($logo) . '" alt="GLPI"></div>';
        }
        if (PluginIntranetConfig::showLinks()) {
-          self::showLinks(true, 'intranet-links-sidebar', false);
+          self::showLinks(true, 'intranet-sidebar-links', false);
        }
 
        $assets = ($me > 0) ? self::getUserAssets($me) : [];
-       echo '<h2 class="h6 mt-2 mb-2"><i class="ti ti-device-desktop me-1"></i>'
+       echo '<h2 class="h6 mt-3 mb-2 px-3"><i class="ti ti-device-desktop me-1"></i>'
           . self::esc(__('My assets', 'intranet')) . '</h2>';
        if (empty($assets)) {
-          echo '<p class="text-muted small mb-0">' . self::esc(__('No assets assigned to you.', 'intranet')) . '</p>';
+          echo '<p class="text-muted small mb-3 px-3">' . self::esc(__('No assets assigned to you.', 'intranet')) . '</p>';
        } else {
-          echo '<ul class="list-unstyled mb-0 intranet-side-assets">';
+          echo '<ul class="list-unstyled mb-3 px-3 intranet-side-assets">';
           foreach (array_slice($assets, 0, 6) as $asset) {
              echo '<li class="text-truncate small"><i class="' . self::esc($asset['icon']) . ' me-1 text-muted"></i>';
              if (!empty($asset['url'])) {
@@ -299,7 +390,11 @@ class PluginIntranetPortal extends CommonGLPI {
           }
           echo '</ul>';
        }
-       echo '</div></div>';
+       echo '<div class="intranet-sidebar-footer">';
+       echo '<small class="text-muted d-block text-center">' . self::esc(__('Intranet', 'intranet')) . '</small>';
+       echo '</div>';
+       echo '</div>';
+       echo '</aside>';
     }
 
     /**

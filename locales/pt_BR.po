@@ -588,3 +588,18 @@ msgstr "Imagem da logo na barra lateral"
 
 msgid "User photo circle"
 msgstr "Círculo da foto do usuário"
+
+msgid "Search announcements..."
+msgstr "Buscar avisos..."
+
+msgid "Toggle sidebar"
+msgstr "Alternar barra lateral"
+
+msgid "My settings"
+msgstr "Minhas configurações"
+
+msgid "Open the intranet portal"
+msgstr "Abrir o portal da intranet"
+
+msgid "Logout"
+msgstr "Sair"

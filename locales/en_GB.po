@@ -588,3 +588,18 @@ msgstr "Sidebar logo image"
 
 msgid "User photo circle"
 msgstr "User photo circle"
+
+msgid "Search announcements..."
+msgstr "Search announcements..."
+
+msgid "Toggle sidebar"
+msgstr "Toggle sidebar"
+
+msgid "My settings"
+msgstr "My settings"
+
+msgid "Open the intranet portal"
+msgstr "Open the intranet portal"
+
+msgid "Logout"
+msgstr "Logout"
