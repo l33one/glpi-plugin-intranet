@@ -1,0 +1,395 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: intranet\n"
+"Language: en_GB\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Access denied."
+msgstr "Access denied."
+
+msgid "Actions"
+msgstr "Actions"
+
+msgid "Active"
+msgstr "Active"
+
+msgid "Alerts"
+msgstr "Alerts"
+
+msgid "All categories"
+msgstr "All categories"
+
+msgid "Announcement deleted."
+msgstr "Announcement deleted."
+
+msgid "Announcement not found."
+msgstr "Announcement not found."
+
+msgid "Announcement saved successfully."
+msgstr "Announcement saved successfully."
+
+msgid "Announcements"
+msgstr "Announcements"
+
+msgid "Announcements shown on the panel"
+msgstr "Announcements shown on the panel"
+
+msgid "Calendar"
+msgstr "Calendar"
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "Category"
+msgstr "Category"
+
+msgid "Clear"
+msgstr "Clear"
+
+msgid "Close"
+msgstr "Close"
+
+msgid "Computers"
+msgstr "Computers"
+
+msgid "Configuration saved successfully."
+msgstr "Configuration saved successfully."
+
+msgid "Configured links"
+msgstr "Configured links"
+
+msgid "Content"
+msgstr "Content"
+
+msgid "Could not delete the announcement."
+msgstr "Could not delete the announcement."
+
+msgid "Could not delete the link."
+msgstr "Could not delete the link."
+
+msgid "Could not save the announcement."
+msgstr "Could not save the announcement."
+
+msgid "Could not save the link."
+msgstr "Could not save the link."
+
+msgid "Dashboard panel"
+msgstr "Dashboard panel"
+
+msgid "Delete"
+msgstr "Delete"
+
+msgid "Delete this announcement?"
+msgstr "Delete this announcement?"
+
+msgid "Delete this link?"
+msgstr "Delete this link?"
+
+msgid "Document"
+msgstr "Document"
+
+msgid "Documentation"
+msgstr "Documentation"
+
+msgid "E-mail"
+msgstr "E-mail"
+
+msgid "Edit"
+msgstr "Edit"
+
+msgid "Edit announcement"
+msgstr "Edit announcement"
+
+msgid "Edit link"
+msgstr "Edit link"
+
+msgid "Event"
+msgstr "Event"
+
+msgid "Expired"
+msgstr "Expired"
+
+msgid "Favorite"
+msgstr "Favorite"
+
+msgid "Files"
+msgstr "Files"
+
+msgid "Full http(s) address or an internal path starting with \"/\"."
+msgstr "Full http(s) address or an internal path starting with \"/\"."
+
+msgid "General"
+msgstr "General"
+
+msgid "Good afternoon"
+msgstr "Good afternoon"
+
+msgid "Good evening"
+msgstr "Good evening"
+
+msgid "Good morning"
+msgstr "Good morning"
+
+msgid "Icon"
+msgstr "Icon"
+
+msgid "Inactive"
+msgstr "Inactive"
+
+msgid "Intranet"
+msgstr "Intranet"
+
+msgid "Intranet Configuration"
+msgstr "Intranet Configuration"
+
+msgid "Intranet Portal"
+msgstr "Intranet Portal"
+
+msgid "Invalid date."
+msgstr "Invalid date."
+
+msgid "Invalid URL. Use a full http(s) address or an internal path starting with \"/\"."
+msgstr "Invalid URL. Use a full http(s) address or an internal path starting with \"/\"."
+
+msgid "Leave empty for no time limit."
+msgstr "Leave empty for no time limit."
+
+msgid "Link"
+msgstr "Link"
+
+msgid "Link deleted."
+msgstr "Link deleted."
+
+msgid "Link not found."
+msgstr "Link not found."
+
+msgid "Link saved successfully."
+msgstr "Link saved successfully."
+
+msgid "Location"
+msgstr "Location"
+
+msgid "Maintenance"
+msgstr "Maintenance"
+
+msgid "Manage content"
+msgstr "Manage content"
+
+msgid "Metrics respect each user's permissions: ticket numbers only appear for profiles that can view tickets."
+msgstr "Metrics respect each user's permissions: ticket numbers only appear for profiles that can view tickets."
+
+msgid "My open tickets"
+msgstr "My open tickets"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "New"
+msgstr "New"
+
+msgid "New announcement"
+msgstr "New announcement"
+
+msgid "New link"
+msgstr "New link"
+
+msgid "News"
+msgstr "News"
+
+msgid "No announcements at the moment."
+msgstr "No announcements at the moment."
+
+msgid "No announcements yet."
+msgstr "No announcements yet."
+
+msgid "No links yet."
+msgstr "No links yet."
+
+msgid "Notice"
+msgstr "Notice"
+
+msgid "Open the intranet portal"
+msgstr "Open the intranet portal"
+
+msgid "Open tickets"
+msgstr "Open tickets"
+
+msgid "Order"
+msgstr "Order"
+
+msgid "People"
+msgstr "People"
+
+msgid "Phone"
+msgstr "Phone"
+
+msgid "Pin to the top"
+msgstr "Pin to the top"
+
+msgid "Pinned"
+msgstr "Pinned"
+
+msgid "Plain text: line breaks are kept, no HTML is needed."
+msgstr "Plain text: line breaks are kept, no HTML is needed."
+
+msgid "Portal"
+msgstr "Portal"
+
+msgid "Published announcements"
+msgstr "Published announcements"
+
+msgid "Quick links"
+msgstr "Quick links"
+
+msgid "Reports"
+msgstr "Reports"
+
+msgid "Save"
+msgstr "Save"
+
+msgid "Scheduled"
+msgstr "Scheduled"
+
+msgid "Search"
+msgstr "Search"
+
+msgid "Search announcements"
+msgstr "Search announcements"
+
+msgid "Search by title or content..."
+msgstr "Search by title or content..."
+
+msgid "Show quick links on the panel"
+msgstr "Show quick links on the panel"
+
+msgid "Show the intranet panel on the dashboard tab of the main screen"
+msgstr "Show the intranet panel on the dashboard tab of the main screen"
+
+msgid "Show the welcome message with the user name"
+msgstr "Show the welcome message with the user name"
+
+msgid "Show ticket and asset metrics"
+msgstr "Show ticket and asset metrics"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Support"
+msgstr "Support"
+
+msgid "The name is required."
+msgstr "The name is required."
+
+msgid "The plugin directory must be named \"intranet\""
+msgstr "The plugin directory must be named \"intranet\""
+
+msgid "The start date must be before the end date."
+msgstr "The start date must be before the end date."
+
+msgid "The title is required."
+msgstr "The title is required."
+
+msgid "Ticket"
+msgstr "Ticket"
+
+msgid "Time"
+msgstr "Time"
+
+msgid "Title"
+msgstr "Title"
+
+msgid "URL"
+msgstr "URL"
+
+msgid "Video"
+msgstr "Video"
+
+msgid "Visible"
+msgstr "Visible"
+
+msgid "Visible from"
+msgstr "Visible from"
+
+msgid "Visible until"
+msgstr "Visible until"
+
+msgid "Website"
+msgstr "Website"
+
+msgid "Without technician"
+msgstr "Without technician"
+
+msgid "My contact info"
+msgstr "My contact info"
+
+msgid "My assets"
+msgstr "My assets"
+
+msgid "No assets assigned to you."
+msgstr "No assets assigned to you."
+
+msgid "Showing %1$d of %2$d assets."
+msgstr "Showing %1$d of %2$d assets."
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Manager"
+msgstr "Manager"
+
+msgid "My groups"
+msgstr "My groups"
+
+msgid "Not informed"
+msgstr "Not informed"
+
+msgid "Tickets awaiting my approval"
+msgstr "Tickets awaiting my approval"
+
+msgid "Tickets I watch"
+msgstr "Tickets I watch"
+
+msgid "My pending tickets"
+msgstr "My pending tickets"
+
+msgid "My solved tickets"
+msgstr "My solved tickets"
+
+msgid "Pending satisfaction surveys (7 days)"
+msgstr "Pending satisfaction surveys (7 days)"
+
+msgid "Show the Intranet tab on the main screen"
+msgstr "Show the Intranet tab on the main screen"
+
+msgid "Show my ticket cards"
+msgstr "Show my ticket cards"
+
+msgid "Cards respect each user's permissions: ticket numbers only appear for profiles that can view tickets."
+msgstr "Cards respect each user's permissions: ticket numbers only appear for profiles that can view tickets."
+
+msgid "Intranet tab"
+msgstr "Intranet tab"
+
+msgid "Icon image (optional)"
+msgstr "Icon image (optional)"
+
+msgid "Remove the current image"
+msgstr "Remove the current image"
+
+msgid "Used when no image is uploaded."
+msgstr "Used when no image is uploaded."
+
+msgid "PNG, JPG, GIF, WEBP, SVG or ICO, max 2 MB. Replaces the icon above when set."
+msgstr "PNG, JPG, GIF, WEBP, SVG or ICO, max 2 MB. Replaces the icon above when set."
+
+msgid "Could not upload the image."
+msgstr "Could not upload the image."
+
+msgid "The image is too large (max 2 MB)."
+msgstr "The image is too large (max 2 MB)."
+
+msgid "Invalid image type. Use PNG, JPG, GIF, WEBP, SVG or ICO."
+msgstr "Invalid image type. Use PNG, JPG, GIF, WEBP, SVG or ICO."

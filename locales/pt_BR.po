@@ -1,0 +1,395 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: intranet\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Access denied."
+msgstr "Acesso negado."
+
+msgid "Actions"
+msgstr "Ações"
+
+msgid "Active"
+msgstr "Ativo"
+
+msgid "Alerts"
+msgstr "Alertas"
+
+msgid "All categories"
+msgstr "Todas as categorias"
+
+msgid "Announcement deleted."
+msgstr "Aviso excluído."
+
+msgid "Announcement not found."
+msgstr "Aviso não encontrado."
+
+msgid "Announcement saved successfully."
+msgstr "Aviso salvo com sucesso."
+
+msgid "Announcements"
+msgstr "Avisos"
+
+msgid "Announcements shown on the panel"
+msgstr "Avisos exibidos no painel"
+
+msgid "Calendar"
+msgstr "Calendário"
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Category"
+msgstr "Categoria"
+
+msgid "Clear"
+msgstr "Limpar"
+
+msgid "Close"
+msgstr "Fechar"
+
+msgid "Computers"
+msgstr "Computadores"
+
+msgid "Configuration saved successfully."
+msgstr "Configuração salva com sucesso."
+
+msgid "Configured links"
+msgstr "Links configurados"
+
+msgid "Content"
+msgstr "Conteúdo"
+
+msgid "Could not delete the announcement."
+msgstr "Não foi possível excluir o aviso."
+
+msgid "Could not delete the link."
+msgstr "Não foi possível excluir o link."
+
+msgid "Could not save the announcement."
+msgstr "Não foi possível salvar o aviso."
+
+msgid "Could not save the link."
+msgstr "Não foi possível salvar o link."
+
+msgid "Dashboard panel"
+msgstr "Painel da dashboard"
+
+msgid "Delete"
+msgstr "Excluir"
+
+msgid "Delete this announcement?"
+msgstr "Excluir este aviso?"
+
+msgid "Delete this link?"
+msgstr "Excluir este link?"
+
+msgid "Document"
+msgstr "Documento"
+
+msgid "Documentation"
+msgstr "Documentação"
+
+msgid "E-mail"
+msgstr "E-mail"
+
+msgid "Edit"
+msgstr "Editar"
+
+msgid "Edit announcement"
+msgstr "Editar aviso"
+
+msgid "Edit link"
+msgstr "Editar link"
+
+msgid "Event"
+msgstr "Evento"
+
+msgid "Expired"
+msgstr "Expirado"
+
+msgid "Favorite"
+msgstr "Favorito"
+
+msgid "Files"
+msgstr "Arquivos"
+
+msgid "Full http(s) address or an internal path starting with \"/\"."
+msgstr "Endereço http(s) completo ou caminho interno começando com \"/\"."
+
+msgid "General"
+msgstr "Geral"
+
+msgid "Good afternoon"
+msgstr "Boa tarde"
+
+msgid "Good evening"
+msgstr "Boa noite"
+
+msgid "Good morning"
+msgstr "Bom dia"
+
+msgid "Icon"
+msgstr "Ícone"
+
+msgid "Inactive"
+msgstr "Inativo"
+
+msgid "Intranet"
+msgstr "Intranet"
+
+msgid "Intranet Configuration"
+msgstr "Configuração da Intranet"
+
+msgid "Intranet Portal"
+msgstr "Portal da Intranet"
+
+msgid "Invalid date."
+msgstr "Data inválida."
+
+msgid "Invalid URL. Use a full http(s) address or an internal path starting with \"/\"."
+msgstr "URL inválida. Use um endereço http(s) completo ou um caminho interno começando com \"/\"."
+
+msgid "Leave empty for no time limit."
+msgstr "Deixe em branco para sem limite de tempo."
+
+msgid "Link"
+msgstr "Link"
+
+msgid "Link deleted."
+msgstr "Link excluído."
+
+msgid "Link not found."
+msgstr "Link não encontrado."
+
+msgid "Link saved successfully."
+msgstr "Link salvo com sucesso."
+
+msgid "Location"
+msgstr "Localização"
+
+msgid "Maintenance"
+msgstr "Manutenção"
+
+msgid "Manage content"
+msgstr "Gerenciar conteúdo"
+
+msgid "Metrics respect each user's permissions: ticket numbers only appear for profiles that can view tickets."
+msgstr "As métricas respeitam as permissões de cada usuário: os números de chamados aparecem apenas para perfis que podem ver chamados."
+
+msgid "My open tickets"
+msgstr "Meus chamados abertos"
+
+msgid "Name"
+msgstr "Nome"
+
+msgid "New"
+msgstr "Novo"
+
+msgid "New announcement"
+msgstr "Novo aviso"
+
+msgid "New link"
+msgstr "Novo link"
+
+msgid "News"
+msgstr "Novidade"
+
+msgid "No announcements at the moment."
+msgstr "Nenhum aviso no momento."
+
+msgid "No announcements yet."
+msgstr "Nenhum aviso ainda."
+
+msgid "No links yet."
+msgstr "Nenhum link ainda."
+
+msgid "Notice"
+msgstr "Aviso"
+
+msgid "Open the intranet portal"
+msgstr "Abrir o portal da intranet"
+
+msgid "Open tickets"
+msgstr "Chamados abertos"
+
+msgid "Order"
+msgstr "Ordem"
+
+msgid "People"
+msgstr "Pessoas"
+
+msgid "Phone"
+msgstr "Telefone"
+
+msgid "Pin to the top"
+msgstr "Fixar no topo"
+
+msgid "Pinned"
+msgstr "Fixado"
+
+msgid "Plain text: line breaks are kept, no HTML is needed."
+msgstr "Texto simples: as quebras de linha são mantidas, sem necessidade de HTML."
+
+msgid "Portal"
+msgstr "Portal"
+
+msgid "Published announcements"
+msgstr "Avisos publicados"
+
+msgid "Quick links"
+msgstr "Links rápidos"
+
+msgid "Reports"
+msgstr "Relatórios"
+
+msgid "Save"
+msgstr "Salvar"
+
+msgid "Scheduled"
+msgstr "Agendado"
+
+msgid "Search"
+msgstr "Buscar"
+
+msgid "Search announcements"
+msgstr "Buscar avisos"
+
+msgid "Search by title or content..."
+msgstr "Buscar por título ou conteúdo..."
+
+msgid "Show quick links on the panel"
+msgstr "Exibir links rápidos no painel"
+
+msgid "Show the intranet panel on the dashboard tab of the main screen"
+msgstr "Exibir o painel da intranet na aba de dashboard da tela principal"
+
+msgid "Show the welcome message with the user name"
+msgstr "Exibir a mensagem de boas-vindas com o nome do usuário"
+
+msgid "Show ticket and asset metrics"
+msgstr "Exibir métricas de chamados e ativos"
+
+msgid "Status"
+msgstr "Situação"
+
+msgid "Support"
+msgstr "Suporte"
+
+msgid "The name is required."
+msgstr "O nome é obrigatório."
+
+msgid "The plugin directory must be named \"intranet\""
+msgstr "O diretório do plugin deve se chamar \"intranet\""
+
+msgid "The start date must be before the end date."
+msgstr "A data inicial deve ser anterior à data final."
+
+msgid "The title is required."
+msgstr "O título é obrigatório."
+
+msgid "Ticket"
+msgstr "Chamado"
+
+msgid "Time"
+msgstr "Hora"
+
+msgid "Title"
+msgstr "Título"
+
+msgid "URL"
+msgstr "URL"
+
+msgid "Video"
+msgstr "Vídeo"
+
+msgid "Visible"
+msgstr "Visível"
+
+msgid "Visible from"
+msgstr "Visível de"
+
+msgid "Visible until"
+msgstr "Visível até"
+
+msgid "Website"
+msgstr "Site"
+
+msgid "Without technician"
+msgstr "Sem técnico"
+
+msgid "My contact info"
+msgstr "Meus dados de contato"
+
+msgid "My assets"
+msgstr "Meus ativos"
+
+msgid "No assets assigned to you."
+msgstr "Nenhum ativo atribuído a você."
+
+msgid "Showing %1$d of %2$d assets."
+msgstr "Exibindo %1$d de %2$d ativos."
+
+msgid "Email"
+msgstr "E-mail"
+
+msgid "Manager"
+msgstr "Gestor"
+
+msgid "My groups"
+msgstr "Meus grupos"
+
+msgid "Not informed"
+msgstr "Não informado"
+
+msgid "Tickets awaiting my approval"
+msgstr "Chamados aguardando minha aprovação"
+
+msgid "Tickets I watch"
+msgstr "Chamados que observo"
+
+msgid "My pending tickets"
+msgstr "Meus chamados pendentes"
+
+msgid "My solved tickets"
+msgstr "Meus chamados solucionados"
+
+msgid "Pending satisfaction surveys (7 days)"
+msgstr "Pesquisas de satisfação pendentes (7 dias)"
+
+msgid "Show the Intranet tab on the main screen"
+msgstr "Exibir a aba Intranet na tela principal"
+
+msgid "Show my ticket cards"
+msgstr "Exibir meus cards de chamados"
+
+msgid "Cards respect each user's permissions: ticket numbers only appear for profiles that can view tickets."
+msgstr "Os cards respeitam as permissões de cada usuário: os números de chamados aparecem apenas para perfis que podem ver chamados."
+
+msgid "Intranet tab"
+msgstr "Aba Intranet"
+
+msgid "Icon image (optional)"
+msgstr "Imagem do ícone (opcional)"
+
+msgid "Remove the current image"
+msgstr "Remover a imagem atual"
+
+msgid "Used when no image is uploaded."
+msgstr "Usado quando nenhuma imagem é enviada."
+
+msgid "PNG, JPG, GIF, WEBP, SVG or ICO, max 2 MB. Replaces the icon above when set."
+msgstr "PNG, JPG, GIF, WEBP, SVG ou ICO, máx. 2 MB. Substitui o ícone acima quando definida."
+
+msgid "Could not upload the image."
+msgstr "Não foi possível enviar a imagem."
+
+msgid "The image is too large (max 2 MB)."
+msgstr "A imagem é muito grande (máx. 2 MB)."
+
+msgid "Invalid image type. Use PNG, JPG, GIF, WEBP, SVG or ICO."
+msgstr "Tipo de imagem inválido. Use PNG, JPG, GIF, WEBP, SVG ou ICO."

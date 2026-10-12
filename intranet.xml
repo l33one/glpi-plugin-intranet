@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+   <name>Intranet</name>
+   <key>intranet</key>
+   <state>stable</state>
+   <description>
+      <short>
+         <en>Corporate intranet portal inside GLPI</en>
+         <pt_BR>Portal de intranet corporativa dentro do GLPI</pt_BR>
+      </short>
+      <long>
+          <en>A corporate intranet portal for GLPI 10+. A responsive panel is shown in its own Intranet tab on the main screen with a greeting, contact info, assigned assets, personal ticket cards, a notice board and quick links with optional icon images. A full portal page is available under the Plugins menu, and everything is managed from Setup &gt; Plugins &gt; Intranet (announcements with categories, pinning and validity dates, plus configurable quick links).</en>
+          <pt_BR>Um portal de intranet corporativa para GLPI 10+. Um painel responsivo e exibido na aba propria Intranet da tela principal com saudacao, dados de contato, ativos atribuidos, cards pessoais de chamados, mural de avisos e links rapidos com imagens de icone opcionais. Uma pagina completa do portal fica disponivel no menu Plugins, e tudo e gerenciado em Configuracao &gt; Plugins &gt; Intranet (avisos com categorias, fixacao e vigencia, alem de links rapidos configuraveis).</pt_BR>
+      </long>
+   </description>
+   <homepage>https://github.com/l33one/glpi-plugin-intranet</homepage>
+   <download>https://github.com/l33one/glpi-plugin-intranet/releases</download>
+   <issues>https://github.com/l33one/glpi-plugin-intranet/issues</issues>
+   <authors>
+      <author>Leewan Meneses</author>
+   </authors>
+   <versions>
+       <version>
+          <num>1.1.0</num>
+         <compatibility>~10.0.0</compatibility>
+         <compatibility>~11.0.0</compatibility>
+      </version>
+   </versions>
+   <langs>
+      <lang>en_GB</lang>
+      <lang>pt_BR</lang>
+   </langs>
+   <license>GPL v2+</license>
+   <tags>
+      <en>
+         <tag>intranet</tag>
+         <tag>dashboard</tag>
+         <tag>portal</tag>
+      </en>
+      <pt_BR>
+         <tag>intranet</tag>
+         <tag>dashboard</tag>
+         <tag>portal</tag>
+      </pt_BR>
+   </tags>
+</root>
