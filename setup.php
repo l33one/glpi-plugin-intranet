@@ -1,6 +1,6 @@
 <?php
 
-define('PLUGIN_INTRANET_VERSION', '1.3.0');
+define('PLUGIN_INTRANET_VERSION', '1.4.0');
 
 function plugin_init_intranet() {
    global $PLUGIN_HOOKS;

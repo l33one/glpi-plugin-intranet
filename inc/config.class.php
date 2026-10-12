@@ -1074,8 +1074,12 @@ class PluginIntranetConfig extends CommonGLPI {
     private function showCssHelpTab(): void {
        $selectors = [
           '.intranet-panel'            => __('Whole panel (tab and portal wrapper)', 'intranet'),
+          '.intranet-sidebar'          => __('Sidebar with logo and quick links', 'intranet'),
+          '.intranet-logo'             => __('Sidebar logo image', 'intranet'),
+          '.intranet-hello'            => __('Greeting bar with user photo', 'intranet'),
+          '.intranet-avatar'           => __('User photo circle', 'intranet'),
           '.intranet-greeting'         => __('Greeting header', 'intranet'),
-          '.intranet-profile'          => __('Contact and assets card', 'intranet'),
+          '.intranet-forms'            => __('Forms and saved searches', 'intranet'),
           '.intranet-carousel'         => __('Banner carousel', 'intranet'),
           '.intranet-carousel-img'     => __('Banner image (size fits here)', 'intranet'),
           '.intranet-metric'           => __('Ticket cards', 'intranet'),

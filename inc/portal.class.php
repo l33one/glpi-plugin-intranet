@@ -94,24 +94,8 @@ class PluginIntranetPortal extends CommonGLPI {
        self::showCustomCss();
        echo '<div class="card-body">';
 
-       if (PluginIntranetConfig::showGreeting()) {
-          self::showGreeting(true);
-       }
        self::showBanners('panel');
-       if (PluginIntranetConfig::showMetrics()) {
-          self::showMetrics();
-       }
-       // Side by side on wide screens so everything fits with less scrolling.
-       echo '<div class="row g-2 mb-2">';
-       echo '<div class="col-12 col-xl-5">';
-       if (PluginIntranetConfig::showLinks()) {
-          self::showLinks(true);
-       }
-       echo '</div>';
-       echo '<div class="col-12 col-xl-7">';
-       self::showAnnouncements($max_announcements, true);
-       echo '</div>';
-       echo '</div>';
+       self::showBoard(false, $max_announcements);
 
        echo '<div class="mt-2 d-flex flex-wrap gap-2">';
       echo '<a class="btn btn-sm btn-outline-primary" href="' . self::esc(self::portalUrl()) . '">'
@@ -156,65 +140,17 @@ class PluginIntranetPortal extends CommonGLPI {
       echo '</div>';
 
        self::showCustomCss();
-       if (PluginIntranetConfig::showGreeting()) {
-          self::showGreeting(false);
-       }
        self::showBanners('portal');
-       if (PluginIntranetConfig::showMetrics()) {
-          self::showMetrics();
-       }
-
-       // Quick links first, then the notice board with search + category filter.
-       // Side by side on wide screens so everything fits with less scrolling.
-       echo '<div class="row g-2">';
-       echo '<div class="col-12 col-xl-4">';
-       if (PluginIntranetConfig::showLinks()) {
-          echo '<div class="card mb-2"><div class="card-body">';
-          echo '<h2 class="h5 mb-3"><i class="ti ti-link me-1"></i>'
-             . PluginIntranetLink::getTypeName(2) . '</h2>';
-          self::showLinks(false);
-          echo '</div></div>';
-       }
-       echo '</div>';
-       echo '<div class="col-12 col-xl-8">';
-       $categories = PluginIntranetAnnouncement::getCategories();
-       echo '<div class="card mb-2"><div class="card-body">';
-       echo '<form method="get" action="' . self::esc(self::portalUrl()) . '" class="row g-2 align-items-end mb-3">';
-       echo '<div class="col-12 col-md-6"><label class="form-label fw-semibold" for="intranet-q">'
-          . __('Search announcements', 'intranet') . '</label>'
-          . '<input type="search" class="form-control" id="intranet-q" name="q" value="' . self::esc($search) . '"'
-          . ' placeholder="' . self::esc(__('Search by title or content...', 'intranet')) . '"></div>';
-       echo '<div class="col-12 col-md-4"><label class="form-label fw-semibold" for="intranet-cat">'
-          . __('Category', 'intranet') . '</label>'
-          . '<select class="form-select" id="intranet-cat" name="cat">'
-          . '<option value="">' . __('All categories', 'intranet') . '</option>';
-       foreach ($categories as $key => $label) {
-          echo '<option value="' . self::esc($key) . '"' . ($category === $key ? ' selected' : '') . '>'
-             . self::esc($label) . '</option>';
-       }
-       echo '</select></div>';
-       echo '<div class="col-12 col-md-2 d-flex gap-2">'
-          . '<button type="submit" class="btn btn-primary flex-fill"><i class="ti ti-search me-1"></i>'
-          . __('Search', 'intranet') . '</button>';
-       if ($search !== '' || $category !== '') {
-          echo '<a class="btn btn-outline-secondary" href="' . self::esc(self::portalUrl()) . '"'
-             . ' title="' . self::esc(__('Clear', 'intranet')) . '"><i class="ti ti-x"></i></a>';
-       }
-       echo '</div></form>';
-
-       self::showAnnouncements(0, false, $category, $search);
-       echo '</div></div>';
-       echo '</div>';
-       echo '</div>';
+       self::showBoard(true, 0, $category, $search);
 
        echo '</div>';
        self::showReaderModal();
    }
 
     /**
-     * Welcome message with the user name, the contact info from the user
-     * profile (phone, e-mail, manager and groups) and the assets assigned to
-     * the current user.
+     * Greeting bar: user photo, welcome message with the current date on one
+     * side and the profile contact info (phone, e-mail, manager and groups)
+     * on the other side, with a shortcut to the user preferences.
      */
     private static function showGreeting(bool $compact): void {
        /** @var array $CFG_GLPI */
@@ -242,95 +178,389 @@ class PluginIntranetPortal extends CommonGLPI {
           }
        }
 
-       $title = $compact ? 'h5' : 'h2';
-       echo '<div class="intranet-greeting mb-3">';
-       echo "<$title class=\"mb-1\">" . $greeting
-          . ($first !== '' ? ', ' . self::esc($first) : '') . '!</' . $title . '>';
-       echo '<div class="text-muted">' . self::esc(Html::convDate(date('Y-m-d'))) . '</div>';
-       echo '</div>';
+       $avatar = self::getUserAvatar($user_fields);
+       $contact = ($me > 0 && !empty($user_fields)) ? self::getUserContact($me, $user_fields) : null;
 
-       if ($me <= 0 || empty($user_fields)) {
-          return;
-       }
-
-       $contact = self::getUserContact($me, $user_fields);
-
-       echo '<div class="card mb-3 intranet-profile"><div class="card-body">';
-       echo '<div class="row g-3">';
-
-       // Contact info from the user profile.
-       echo '<div class="col-12 col-lg-6">';
-       echo '<h3 class="h6 mb-2"><i class="ti ti-id me-1"></i>'
-          . self::esc(__('My contact info', 'intranet')) . '</h3>';
-       echo '<ul class="list-unstyled mb-0 intranet-contact">';
-       self::contactLine('ti-mail', __('Email', 'intranet'), $contact['emails']);
-       self::contactLine('ti-phone', __('Phone', 'intranet'), $contact['phones']);
-       self::contactLine('ti-user-check', __('Manager', 'intranet'), $contact['manager']);
-       self::contactLine('ti-users', __('My groups', 'intranet'), $contact['groups']);
-       echo '</ul>';
-       $pref_url = ($CFG_GLPI['root_doc'] ?? '') . '/front/preference.php';
-       echo '<div class="mt-2"><a class="btn btn-sm btn-outline-primary" href="' . self::esc($pref_url) . '">'
-          . '<i class="ti ti-pencil me-1"></i>' . self::esc(__('Edit my data', 'intranet')) . '</a></div>';
-       echo '</div>';
-
-       // Assets assigned to the current user.
-       $assets = self::getUserAssets($me);
-       echo '<div class="col-12 col-lg-6">';
-       echo '<h3 class="h6 mb-2"><i class="ti ti-device-desktop me-1"></i>'
-          . self::esc(__('My assets', 'intranet')) . '</h3>';
-       if (empty($assets)) {
-          echo '<p class="text-muted mb-0">' . self::esc(__('No assets assigned to you.', 'intranet')) . '</p>';
+       echo '<div class="card mb-2 intranet-hello"><div class="card-body">';
+       echo '<div class="d-flex align-items-center gap-3 flex-wrap">';
+       echo '<span class="intranet-avatar">';
+       if ($avatar !== '') {
+          echo '<img src="' . self::esc($avatar) . '" alt="">';
        } else {
-          echo '<ul class="list-group intranet-assets">';
-          foreach (array_slice($assets, 0, 8) as $asset) {
-             echo '<li class="list-group-item d-flex justify-content-between align-items-center gap-2 py-1 px-2">';
-             echo '<span class="text-truncate"><i class="' . self::esc($asset['icon']) . ' me-1 text-muted"></i>';
-             if (!empty($asset['url'])) {
-                echo '<a href="' . self::esc($asset['url']) . '">' . self::esc($asset['label']) . '</a>';
-             } else {
-                echo self::esc($asset['label']);
-             }
-             echo '</span>';
-             echo '<span class="badge bg-secondary">' . self::esc($asset['type']) . '</span>';
-             echo '</li>';
-          }
-          echo '</ul>';
-          if (count($assets) > 8) {
-             echo '<small class="text-muted">'
-                . sprintf(self::esc(__('Showing %1$d of %2$d assets.', 'intranet')), 8, count($assets))
-                . '</small>';
-          }
+          echo '<i class="ti ti-user"></i>';
        }
+       echo '</span>';
+       echo '<div class="intranet-hello-main">';
+       echo '<div class="intranet-hello-title">' . $greeting
+          . ($first !== '' ? ', ' . self::esc($first) : '') . '!</div>';
+       echo '<div class="text-muted small">' . self::esc(Html::convDate(date('Y-m-d'))) . '</div>';
        echo '</div>';
-
+       if ($contact !== null) {
+          echo '<div class="ms-lg-auto intranet-hello-contact small">';
+          self::contactInline('ti-mail', $contact['emails']);
+          self::contactInline('ti-phone', $contact['phones']);
+          self::contactInline('ti-user-check', $contact['manager']);
+          self::contactInline('ti-users', $contact['groups']);
+          $pref_url = ($CFG_GLPI['root_doc'] ?? '') . '/front/preference.php';
+          echo '<a class="btn btn-sm btn-outline-primary mt-1" href="' . self::esc($pref_url) . '">'
+             . '<i class="ti ti-pencil me-1"></i>' . self::esc(__('Edit my data', 'intranet')) . '</a>';
+          echo '</div>';
+       }
        echo '</div>';
        echo '</div></div>';
     }
 
     /**
-     * Render one contact line (label + single value, list or fallback).
+     * One inline contact value (icon + text) for the greeting bar.
      *
      * @param string       $icon
-     * @param string       $label
      * @param array|string $value
      */
-    private static function contactLine(string $icon, string $label, $value): void {
+    private static function contactInline(string $icon, $value): void {
        if (is_array($value)) {
           $value = array_values(array_filter(array_map('trim', array_map('strval', $value))));
           if (empty($value)) {
-             $value = __('Not informed', 'intranet');
-          } else {
-             $value = implode(' · ', array_map([self::class, 'esc'], $value));
-             echo '<li class="mb-1"><i class="ti ' . self::esc($icon) . ' me-1 text-muted"></i>'
-                . '<span class="text-muted">' . self::esc($label) . ':</span> ' . $value . '</li>';
              return;
           }
-       } elseif (trim((string)$value) === '') {
-          $value = __('Not informed', 'intranet');
+          $value = implode(' · ', $value);
        }
-       echo '<li class="mb-1"><i class="ti ' . self::esc($icon) . ' me-1 text-muted"></i>'
-          . '<span class="text-muted">' . self::esc($label) . ':</span> '
-          . self::esc((string)$value) . '</li>';
+       $value = trim((string)$value);
+       if ($value === '') {
+          return;
+       }
+       echo '<div class="intranet-hello-line"><i class="ti ' . self::esc($icon) . ' me-1 text-muted"></i>'
+          . self::esc($value) . '</div>';
+    }
+
+    /**
+     * Layout board: sidebar (logo + quick links + assets) beside the main
+     * column (greeting bar, ticket cards, forms, saved searches, notices).
+     */
+    private static function showBoard(bool $portal, int $max_announcements = 3, string $category = '', string $search = ''): void {
+       echo '<div class="row g-2 intranet-board">';
+       echo '<div class="col-12 col-xl-3">';
+       self::showSidebar();
+       echo '</div>';
+       echo '<div class="col-12 col-xl-9">';
+       if (PluginIntranetConfig::showGreeting()) {
+          self::showGreeting(true);
+       }
+       if (PluginIntranetConfig::showMetrics()) {
+          self::showMetrics();
+       }
+       echo '<div class="row g-2 mb-2">';
+       echo '<div class="col-12 col-lg-6">';
+       self::showForms();
+       echo '</div>';
+       echo '<div class="col-12 col-lg-6">';
+       self::showSavedSearches();
+       echo '</div>';
+       echo '</div>';
+       if ($portal) {
+          self::showNoticeBoard($category, $search);
+       } else {
+          self::showAnnouncements($max_announcements, true);
+       }
+       echo '</div>';
+       echo '</div>';
+    }
+
+    /**
+     * Sidebar: GLPI logo on the header, quick links (2 icons per row) and a
+     * compact list of the assets assigned to the current user.
+     */
+    private static function showSidebar(): void {
+       $me = (int)Session::getLoginUserID();
+
+       echo '<div class="card mb-2 intranet-sidebar"><div class="card-body">';
+       $logo = self::getGlpiLogo();
+       if ($logo !== '') {
+          echo '<div class="intranet-logo"><img src="' . self::esc($logo) . '" alt="GLPI"></div>';
+       }
+       if (PluginIntranetConfig::showLinks()) {
+          self::showLinks(true, 'intranet-links-sidebar', false);
+       }
+
+       $assets = ($me > 0) ? self::getUserAssets($me) : [];
+       echo '<h2 class="h6 mt-2 mb-2"><i class="ti ti-device-desktop me-1"></i>'
+          . self::esc(__('My assets', 'intranet')) . '</h2>';
+       if (empty($assets)) {
+          echo '<p class="text-muted small mb-0">' . self::esc(__('No assets assigned to you.', 'intranet')) . '</p>';
+       } else {
+          echo '<ul class="list-unstyled mb-0 intranet-side-assets">';
+          foreach (array_slice($assets, 0, 6) as $asset) {
+             echo '<li class="text-truncate small"><i class="' . self::esc($asset['icon']) . ' me-1 text-muted"></i>';
+             if (!empty($asset['url'])) {
+                echo '<a href="' . self::esc($asset['url']) . '">' . self::esc($asset['label']) . '</a>';
+             } else {
+                echo self::esc($asset['label']);
+             }
+             echo '</li>';
+          }
+          echo '</ul>';
+       }
+       echo '</div></div>';
+    }
+
+    /**
+     * Notice board card with search + category filter (portal page).
+     */
+    private static function showNoticeBoard(string $category = '', string $search = ''): void {
+       $categories = PluginIntranetAnnouncement::getCategories();
+       echo '<div class="card mb-2"><div class="card-body">';
+       echo '<form method="get" action="' . self::esc(self::portalUrl()) . '" class="row g-2 align-items-end mb-3">';
+       echo '<div class="col-12 col-md-6"><label class="form-label fw-semibold" for="intranet-q">'
+          . __('Search announcements', 'intranet') . '</label>'
+          . '<input type="search" class="form-control" id="intranet-q" name="q" value="' . self::esc($search) . '"'
+          . ' placeholder="' . self::esc(__('Search by title or content...', 'intranet')) . '"></div>';
+       echo '<div class="col-12 col-md-4"><label class="form-label fw-semibold" for="intranet-cat">'
+          . __('Category', 'intranet') . '</label>'
+          . '<select class="form-select" id="intranet-cat" name="cat">'
+          . '<option value="">' . __('All categories', 'intranet') . '</option>';
+       foreach ($categories as $key => $label) {
+          echo '<option value="' . self::esc($key) . '"' . ($category === $key ? ' selected' : '') . '>'
+             . self::esc($label) . '</option>';
+       }
+       echo '</select></div>';
+       echo '<div class="col-12 col-md-2 d-flex gap-2">'
+          . '<button type="submit" class="btn btn-primary flex-fill"><i class="ti ti-search me-1"></i>'
+          . __('Search', 'intranet') . '</button>';
+       if ($search !== '' || $category !== '') {
+          echo '<a class="btn btn-outline-secondary" href="' . self::esc(self::portalUrl()) . '"'
+             . ' title="' . self::esc(__('Clear', 'intranet')) . '"><i class="ti ti-x"></i></a>';
+       }
+       echo '</div></form>';
+
+       self::showAnnouncements(0, false, $category, $search);
+       echo '</div></div>';
+    }
+
+    /**
+     * URL of the GLPI logo for the sidebar header: prefers the custom login
+     * logo when present, then the stock GLPI 11 / GLPI 10 artwork.
+     *
+     * @return string Empty when no logo file is found
+     */
+    public static function getGlpiLogo(): string {
+       /** @var array $CFG_GLPI */
+       global $CFG_GLPI;
+
+       if (!defined('GLPI_ROOT')) {
+          return '';
+       }
+       $root = $CFG_GLPI['root_doc'] ?? '';
+       $candidates = [
+          'public/pics/login_logo_glpi.png'         => 'pics/login_logo_glpi.png',
+          'public/pics/logos/logo-GLPI-100-black.png' => 'pics/logos/logo-GLPI-100-black.png',
+          'public/pics/logos/logo-GLPI-100-grey.png'  => 'pics/logos/logo-GLPI-100-grey.png',
+          'pics/logos/logo-GLPI-100-black.png'        => 'pics/logos/logo-GLPI-100-black.png',
+       ];
+       foreach ($candidates as $disk => $url) {
+          if (is_file(GLPI_ROOT . '/' . $disk)) {
+             return $root . '/' . $url;
+          }
+       }
+       return '';
+    }
+
+    /**
+     * Thumbnail URL of the user photo, or empty when the user has none.
+     */
+    public static function getUserAvatar(array $user_fields): string {
+       $picture = trim((string)($user_fields['picture'] ?? ''));
+       if ($picture === '' || !method_exists('User', 'getThumbnailURLForPicture')) {
+          return '';
+       }
+       try {
+          return (string)User::getThumbnailURLForPicture($picture);
+       } catch (\Throwable $e) {
+          return '';
+       }
+    }
+
+    /**
+     * Standard forms highlighted in GLPI: pinned forms plus forms published
+     * as tiles on the assistance home, limited to active entity-visible ones.
+     *
+     * @return array List of {name, url}
+     */
+    public static function getPinnedForms(): array {
+       /** @var DBmysql $DB */
+       global $DB, $CFG_GLPI;
+
+       $forms = [];
+       if (!$DB->tableExists('glpi_forms_forms')) {
+          return $forms;
+       }
+       try {
+          $ids = [];
+          if ($DB->fieldExists('glpi_forms_forms', 'is_pinned')) {
+             $it = $DB->request([
+                'SELECT' => ['id'],
+                'FROM'   => 'glpi_forms_forms',
+                'WHERE'  => [
+                   'is_active'  => 1,
+                   'is_deleted' => 0,
+                   'is_pinned'  => 1,
+                ] + getEntitiesRestrictCriteria('glpi_forms_forms'),
+             ]);
+             foreach ($it as $row) {
+                $ids[(int)$row['id']] = true;
+             }
+          }
+          if ($DB->tableExists('glpi_helpdesks_tiles_formtiles')) {
+             $it = $DB->request([
+                'SELECT' => ['forms_forms_id'],
+                'FROM'   => 'glpi_helpdesks_tiles_formtiles',
+             ]);
+             foreach ($it as $row) {
+                $ids[(int)$row['forms_forms_id']] = true;
+             }
+          }
+          if (empty($ids)) {
+             return $forms;
+          }
+          $where = [
+             'glpi_forms_forms.id'         => array_keys($ids),
+             'glpi_forms_forms.is_active'  => 1,
+             'glpi_forms_forms.is_deleted' => 0,
+          ];
+          if ($DB->fieldExists('glpi_forms_forms', 'is_draft')) {
+             $where['glpi_forms_forms.is_draft'] = 0;
+          }
+          $it = $DB->request([
+             'SELECT' => ['glpi_forms_forms.id', 'glpi_forms_forms.name'],
+             'FROM'   => 'glpi_forms_forms',
+             'WHERE'  => $where + getEntitiesRestrictCriteria('glpi_forms_forms'),
+             'ORDER'  => ['glpi_forms_forms.name'],
+          ]);
+          foreach ($it as $row) {
+             $name = trim((string)($row['name'] ?? ''));
+             if ($name === '') {
+                continue;
+             }
+             $forms[] = [
+                'name' => $name,
+                'url'  => ($CFG_GLPI['root_doc'] ?? '') . '/Form/Render/' . (int)$row['id'],
+             ];
+          }
+       } catch (\Throwable $e) {
+          return [];
+       }
+       return $forms;
+    }
+
+    /**
+     * List of standard GLPI forms.
+     */
+    private static function showForms(): void {
+       $forms = self::getPinnedForms();
+       echo '<div class="card mb-2 intranet-forms"><div class="card-body">';
+       echo '<h2 class="h6 mb-2"><i class="ti ti-forms me-1"></i>'
+          . self::esc(__('Forms', 'intranet')) . '</h2>';
+       if (empty($forms)) {
+          echo '<p class="text-muted small mb-0">' . self::esc(__('No forms to show.', 'intranet')) . '</p>';
+       } else {
+          echo '<ul class="list-group intranet-forms-list">';
+          foreach ($forms as $form) {
+             echo '<li class="list-group-item py-1 px-2">';
+             echo '<a href="' . self::esc($form['url']) . '" class="d-flex align-items-center gap-2 text-truncate">';
+             echo '<i class="ti ti-chevron-right text-muted"></i>';
+             echo '<span class="text-truncate">' . self::esc($form['name']) . '</span>';
+             echo '</a></li>';
+          }
+          echo '</ul>';
+       }
+       echo '</div></div>';
+    }
+
+    /**
+     * Saved searches of the current user (personal order kept).
+     *
+     * @return array List of {name, itemtype, url, external}
+     */
+    public static function getMySavedSearches(): array {
+       /** @var array $CFG_GLPI */
+       global $CFG_GLPI;
+
+       $searches = [];
+       if (!class_exists('SavedSearch')) {
+          return $searches;
+       }
+       try {
+          $rows = (new SavedSearch())->getMine();
+       } catch (\Throwable $e) {
+          return $searches;
+       }
+       $uri_type = defined('SavedSearch::URI') ? (int)constant('SavedSearch::URI') : 2;
+       foreach ($rows as $row) {
+          if (!is_array($row)) {
+             continue;
+          }
+          $name = trim((string)($row['name'] ?? ''));
+          if ($name === '') {
+             continue;
+          }
+          $item = [
+             'name'     => $name,
+             'itemtype' => trim((string)($row['itemtype'] ?? '')),
+             'url'      => '',
+             'external' => false,
+          ];
+          if ((int)($row['type'] ?? 0) === $uri_type) {
+             $url = trim((string)($row['query'] ?? ''));
+             if (!PluginIntranetLink::isExternalUrl($url)) {
+                continue;
+             }
+             $item['url'] = $url;
+             $item['external'] = true;
+          } else {
+             $itemtype = $item['itemtype'];
+             if (
+                $itemtype === '' || !class_exists($itemtype)
+                || !is_subclass_of($itemtype, 'CommonDBTM')
+                || !method_exists($itemtype, 'getSearchURL')
+             ) {
+                continue;
+             }
+             try {
+                $item['url'] = $itemtype::getSearchURL() . '?savedsearches_id=' . (int)($row['id'] ?? 0);
+             } catch (\Throwable $e) {
+                continue;
+             }
+          }
+          $searches[] = $item;
+       }
+       return $searches;
+    }
+
+    /**
+     * List of the current user saved searches.
+     */
+    private static function showSavedSearches(): void {
+       $searches = self::getMySavedSearches();
+       echo '<div class="card mb-2 intranet-searches"><div class="card-body">';
+       echo '<h2 class="h6 mb-2"><i class="ti ti-bookmark me-1"></i>'
+          . self::esc(__('My saved searches', 'intranet')) . '</h2>';
+       if (empty($searches)) {
+          echo '<p class="text-muted small mb-0">' . self::esc(__('No saved searches.', 'intranet')) . '</p>';
+       } else {
+          echo '<ul class="list-group intranet-searches-list">';
+          foreach ($searches as $search) {
+             echo '<li class="list-group-item py-1 px-2">';
+             echo '<a href="' . self::esc($search['url']) . '"'
+                . ($search['external'] ? ' target="_blank" rel="noopener"' : '')
+                . ' class="d-flex align-items-center gap-2">';
+             echo '<i class="ti ti-search text-muted"></i>';
+             echo '<span class="text-truncate">' . self::esc($search['name']) . '</span>';
+             if ($search['itemtype'] !== '') {
+                echo '<span class="badge bg-secondary ms-auto">' . self::esc($search['itemtype']) . '</span>';
+             }
+             echo '</a></li>';
+          }
+          echo '</ul>';
+       }
+       echo '</div></div>';
     }
 
     /**
@@ -577,8 +807,8 @@ class PluginIntranetPortal extends CommonGLPI {
       }
        echo '<div class="row g-2 mb-2 intranet-metrics">';
        foreach ($metrics as $metric) {
-          // 2 rows of 3 cards on desktop, 3 rows of 2 on small screens.
-          echo '<div class="col-6 col-lg-4">';
+          // All cards on a single row on wide screens.
+          echo '<div class="col-6 col-md-4 col-xl-2">';
          echo '<div class="intranet-metric card h-100"><div class="card-body d-flex align-items-center gap-3">';
          echo '<div class="intranet-metric-icon text-' . self::esc($metric['color']) . '">'
             . '<i class="' . self::esc($metric['icon']) . '"></i></div>';
@@ -871,19 +1101,24 @@ class PluginIntranetPortal extends CommonGLPI {
       echo '</div>';
    }
 
-   /**
-    * Quick links section.
-    */
-   private static function showLinks(bool $compact): void {
-      $links = PluginIntranetLink::getVisible();
-      if (empty($links)) {
-         return;
-      }
-      if ($compact) {
+    /**
+     * Quick links section.
+     *
+     * @param boolean $compact     Compact heading style
+     * @param string  $extra_class Extra class for the grid (e.g. 2-per-row sidebar)
+     * @param boolean $heading     Whether to print the section heading
+     */
+    private static function showLinks(bool $compact, string $extra_class = '', bool $heading = true): void {
+       $links = PluginIntranetLink::getVisible();
+       if (empty($links)) {
+          return;
+       }
+       if ($heading && $compact) {
           echo '<h2 class="h6 mt-2 mb-2"><i class="ti ti-link me-1"></i>'
-            . PluginIntranetLink::getTypeName(2) . '</h2>';
-      }
-       echo '<div class="intranet-links-grid">';
+             . PluginIntranetLink::getTypeName(2) . '</h2>';
+       }
+       echo '<div class="intranet-links-grid'
+          . ($extra_class !== '' ? ' ' . self::esc($extra_class) : '') . '">';
        foreach ($links as $link) {
           $external = PluginIntranetLink::isExternalUrl((string)$link['url']);
           echo '<a class="intranet-tile" href="' . self::esc($link['url']) . '"'

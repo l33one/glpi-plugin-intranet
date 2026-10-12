@@ -561,3 +561,30 @@ msgstr "Exemplos (copie e cole)"
 
 msgid "CSS is sanitized on save: closing style tags and HTML comments are removed, max 20000 characters."
 msgstr "O CSS é higienizado ao salvar: tags de fechamento style e comentários HTML são removidos, máx. 20000 caracteres."
+
+msgid "Forms"
+msgstr "Formulários"
+
+msgid "No forms to show."
+msgstr "Nenhum formulário para exibir."
+
+msgid "My saved searches"
+msgstr "Minhas pesquisas salvas"
+
+msgid "No saved searches."
+msgstr "Nenhuma pesquisa salva."
+
+msgid "Sidebar with logo and quick links"
+msgstr "Barra lateral com logo e links rápidos"
+
+msgid "Greeting bar with user photo"
+msgstr "Barra de boas-vindas com foto do usuário"
+
+msgid "Forms and saved searches"
+msgstr "Formulários e pesquisas salvas"
+
+msgid "Sidebar logo image"
+msgstr "Imagem da logo na barra lateral"
+
+msgid "User photo circle"
+msgstr "Círculo da foto do usuário"

@@ -561,3 +561,30 @@ msgstr "Examples (copy and paste)"
 
 msgid "CSS is sanitized on save: closing style tags and HTML comments are removed, max 20000 characters."
 msgstr "CSS is sanitized on save: closing style tags and HTML comments are removed, max 20000 characters."
+
+msgid "Forms"
+msgstr "Forms"
+
+msgid "No forms to show."
+msgstr "No forms to show."
+
+msgid "My saved searches"
+msgstr "My saved searches"
+
+msgid "No saved searches."
+msgstr "No saved searches."
+
+msgid "Sidebar with logo and quick links"
+msgstr "Sidebar with logo and quick links"
+
+msgid "Greeting bar with user photo"
+msgstr "Greeting bar with user photo"
+
+msgid "Forms and saved searches"
+msgstr "Forms and saved searches"
+
+msgid "Sidebar logo image"
+msgstr "Sidebar logo image"
+
+msgid "User photo circle"
+msgstr "User photo circle"
