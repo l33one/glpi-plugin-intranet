@@ -208,6 +208,110 @@ a.intranet-metric-link,
    margin-bottom: 0;
 }
 
+/* --- Compact layout: fit more on screen, less scrolling -------------------- */
+.intranet-panel > .card-body {
+   padding: 0.75rem;
+}
+
+.intranet-portal.container-fluid {
+   padding-top: 0.75rem;
+   padding-bottom: 0.75rem;
+}
+
+.intranet-greeting {
+   display: flex;
+   align-items: baseline;
+   flex-wrap: wrap;
+   column-gap: 0.5rem;
+   margin-bottom: 0.5rem !important;
+}
+
+.intranet-greeting .mb-1 {
+   margin-bottom: 0 !important;
+}
+
+.intranet-profile .card-body {
+   padding: 0.6rem 0.75rem;
+}
+
+.intranet-profile h3.h6 {
+   margin-bottom: 0.35rem !important;
+   font-size: 0.85rem;
+}
+
+.intranet-contact li {
+   margin-bottom: 0.15rem !important;
+   font-size: 0.85rem;
+}
+
+@media (min-width: 992px) {
+   .intranet-contact {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 0.75rem;
+   }
+}
+
+.intranet-assets .list-group-item {
+   font-size: 0.85rem;
+}
+
+.intranet-metric .card-body {
+   padding: 0.5rem 0.6rem !important;
+   gap: 0.5rem !important;
+}
+
+.intranet-metric-icon {
+   font-size: 1.4rem;
+}
+
+.intranet-metric-value {
+   font-size: 1.15rem;
+}
+
+.intranet-metric-label {
+   font-size: 0.72rem;
+}
+
+.intranet-panel h2.h6,
+.intranet-portal h2.h5 {
+   margin-bottom: 0.4rem !important;
+}
+
+.intranet-links-grid {
+   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+   gap: 0.5rem;
+}
+
+.intranet-tile {
+   padding: 0.6rem 0.4rem 0.5rem;
+   gap: 0.35rem;
+}
+
+.intranet-tile-icon {
+   width: 40px;
+   height: 40px;
+   font-size: 1.4rem;
+   border-radius: 0.75rem;
+}
+
+.intranet-tile-label {
+   font-size: 0.72rem;
+}
+
+.intranet-carousel-img {
+   max-height: 170px;
+}
+
+.intranet-announcements .list-group-item {
+   padding: 0.4rem 0.6rem;
+}
+
+.intranet-announcement-excerpt {
+   -webkit-line-clamp: 1;
+   max-height: 1.5em;
+}
+
 /* --- Small screens ------------------------------------------------------- */
 @media (max-width: 575.98px) {
    .intranet-metric-icon {

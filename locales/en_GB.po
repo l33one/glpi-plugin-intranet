@@ -495,3 +495,69 @@ msgstr "Previous"
 
 msgid "Next"
 msgstr "Next"
+
+msgid "CSS help"
+msgstr "CSS help"
+
+msgid "Whole panel (tab and portal wrapper)"
+msgstr "Whole panel (tab and portal wrapper)"
+
+msgid "Greeting header"
+msgstr "Greeting header"
+
+msgid "Contact and assets card"
+msgstr "Contact and assets card"
+
+msgid "Banner carousel"
+msgstr "Banner carousel"
+
+msgid "Banner image (size fits here)"
+msgstr "Banner image (size fits here)"
+
+msgid "Ticket cards"
+msgstr "Ticket cards"
+
+msgid "Ticket card numbers"
+msgstr "Ticket card numbers"
+
+msgid "Quick-link grid (columns fit here)"
+msgstr "Quick-link grid (columns fit here)"
+
+msgid "Quick-link tiles"
+msgstr "Quick-link tiles"
+
+msgid "Tile icon badge"
+msgstr "Tile icon badge"
+
+msgid "Notice board list"
+msgstr "Notice board list"
+
+msgid "Gradient greeting"
+msgstr "Gradient greeting"
+
+msgid "Accent on ticket cards"
+msgstr "Accent on ticket cards"
+
+msgid "Bigger link tiles"
+msgstr "Bigger link tiles"
+
+msgid "Taller banners"
+msgstr "Taller banners"
+
+msgid "How to customize the look"
+msgstr "How to customize the look"
+
+msgid "Write extra CSS in the General tab. It applies to the Intranet tab and the portal. The classes below are stable styling hooks."
+msgstr "Write extra CSS in the General tab. It applies to the Intranet tab and the portal. The classes below are stable styling hooks."
+
+msgid "Selector"
+msgstr "Selector"
+
+msgid "Styles"
+msgstr "Styles"
+
+msgid "Examples (copy and paste)"
+msgstr "Examples (copy and paste)"
+
+msgid "CSS is sanitized on save: closing style tags and HTML comments are removed, max 20000 characters."
+msgstr "CSS is sanitized on save: closing style tags and HTML comments are removed, max 20000 characters."

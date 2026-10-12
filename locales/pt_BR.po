@@ -495,3 +495,69 @@ msgstr "Anterior"
 
 msgid "Next"
 msgstr "Próximo"
+
+msgid "CSS help"
+msgstr "Ajuda de CSS"
+
+msgid "Whole panel (tab and portal wrapper)"
+msgstr "Painel inteiro (aba e portal)"
+
+msgid "Greeting header"
+msgstr "Cabeçalho de boas-vindas"
+
+msgid "Contact and assets card"
+msgstr "Card de contato e ativos"
+
+msgid "Banner carousel"
+msgstr "Carrossel de banners"
+
+msgid "Banner image (size fits here)"
+msgstr "Imagem do banner (tamanho ajustado aqui)"
+
+msgid "Ticket cards"
+msgstr "Cards de chamados"
+
+msgid "Ticket card numbers"
+msgstr "Números dos cards de chamados"
+
+msgid "Quick-link grid (columns fit here)"
+msgstr "Grade de links rápidos (colunas ajustadas aqui)"
+
+msgid "Quick-link tiles"
+msgstr "Cartões de links rápidos"
+
+msgid "Tile icon badge"
+msgstr "Distintivo do ícone do cartão"
+
+msgid "Notice board list"
+msgstr "Lista do mural de avisos"
+
+msgid "Gradient greeting"
+msgstr "Boas-vindas em degradê"
+
+msgid "Accent on ticket cards"
+msgstr "Destaque nos cards de chamados"
+
+msgid "Bigger link tiles"
+msgstr "Cartões de links maiores"
+
+msgid "Taller banners"
+msgstr "Banners mais altos"
+
+msgid "How to customize the look"
+msgstr "Como personalizar o visual"
+
+msgid "Write extra CSS in the General tab. It applies to the Intranet tab and the portal. The classes below are stable styling hooks."
+msgstr "Escreva CSS extra na aba Geral. Ele vale para a aba Intranet e o portal. As classes abaixo são pontos estáveis de personalização."
+
+msgid "Selector"
+msgstr "Seletor"
+
+msgid "Styles"
+msgstr "Estiliza"
+
+msgid "Examples (copy and paste)"
+msgstr "Exemplos (copie e cole)"
+
+msgid "CSS is sanitized on save: closing style tags and HTML comments are removed, max 20000 characters."
+msgstr "O CSS é higienizado ao salvar: tags de fechamento style e comentários HTML são removidos, máx. 20000 caracteres."

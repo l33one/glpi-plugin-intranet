@@ -101,12 +101,19 @@ class PluginIntranetPortal extends CommonGLPI {
        if (PluginIntranetConfig::showMetrics()) {
           self::showMetrics();
        }
+       // Side by side on wide screens so everything fits with less scrolling.
+       echo '<div class="row g-2 mb-2">';
+       echo '<div class="col-12 col-xl-5">';
        if (PluginIntranetConfig::showLinks()) {
           self::showLinks(true);
        }
+       echo '</div>';
+       echo '<div class="col-12 col-xl-7">';
        self::showAnnouncements($max_announcements, true);
+       echo '</div>';
+       echo '</div>';
 
-      echo '<div class="mt-3 d-flex flex-wrap gap-2">';
+       echo '<div class="mt-2 d-flex flex-wrap gap-2">';
       echo '<a class="btn btn-sm btn-outline-primary" href="' . self::esc(self::portalUrl()) . '">'
          . '<i class="ti ti-home me-1"></i>' . __('Open the intranet portal', 'intranet') . '</a>';
       if (self::canManage()) {
@@ -140,7 +147,7 @@ class PluginIntranetPortal extends CommonGLPI {
       echo '<div class="intranet-portal container-fluid py-4" data-intranet-ajax="'
          . self::esc($CFG_GLPI['root_doc'] . '/plugins/intranet/ajax/announcement.php') . '">';
 
-      echo '<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">';
+       echo '<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">';
       echo '<h1 class="h3 mb-0"><i class="ti ti-home me-1"></i>' . __('Intranet Portal', 'intranet') . '</h1>';
       if (self::canManage()) {
          echo '<a class="btn btn-outline-secondary" href="' . self::esc(self::configUrl()) . '">'
@@ -158,16 +165,20 @@ class PluginIntranetPortal extends CommonGLPI {
        }
 
        // Quick links first, then the notice board with search + category filter.
+       // Side by side on wide screens so everything fits with less scrolling.
+       echo '<div class="row g-2">';
+       echo '<div class="col-12 col-xl-4">';
        if (PluginIntranetConfig::showLinks()) {
-          echo '<div class="card mb-3"><div class="card-body">';
+          echo '<div class="card mb-2"><div class="card-body">';
           echo '<h2 class="h5 mb-3"><i class="ti ti-link me-1"></i>'
              . PluginIntranetLink::getTypeName(2) . '</h2>';
           self::showLinks(false);
           echo '</div></div>';
        }
-
+       echo '</div>';
+       echo '<div class="col-12 col-xl-8">';
        $categories = PluginIntranetAnnouncement::getCategories();
-       echo '<div class="card mb-3"><div class="card-body">';
+       echo '<div class="card mb-2"><div class="card-body">';
        echo '<form method="get" action="' . self::esc(self::portalUrl()) . '" class="row g-2 align-items-end mb-3">';
        echo '<div class="col-12 col-md-6"><label class="form-label fw-semibold" for="intranet-q">'
           . __('Search announcements', 'intranet') . '</label>'
@@ -193,6 +204,8 @@ class PluginIntranetPortal extends CommonGLPI {
 
        self::showAnnouncements(0, false, $category, $search);
        echo '</div></div>';
+       echo '</div>';
+       echo '</div>';
 
        echo '</div>';
        self::showReaderModal();
@@ -511,7 +524,7 @@ class PluginIntranetPortal extends CommonGLPI {
        $id = 'intranet-carousel-' . preg_replace('/[^a-z0-9_-]/i', '', $suffix);
        $multiple = count($banners) > 1;
 
-       echo '<div id="' . self::esc($id) . '" class="carousel slide intranet-carousel mb-3" data-bs-ride="carousel">';
+       echo '<div id="' . self::esc($id) . '" class="carousel slide intranet-carousel mb-2" data-bs-ride="carousel">';
        if ($multiple) {
           echo '<div class="carousel-indicators">';
           foreach (array_keys($banners) as $i) {
@@ -562,7 +575,7 @@ class PluginIntranetPortal extends CommonGLPI {
       if (empty($metrics)) {
          return;
       }
-       echo '<div class="row g-2 mb-3 intranet-metrics">';
+       echo '<div class="row g-2 mb-2 intranet-metrics">';
        foreach ($metrics as $metric) {
           // 2 rows of 3 cards on desktop, 3 rows of 2 on small screens.
           echo '<div class="col-6 col-lg-4">';
@@ -867,7 +880,7 @@ class PluginIntranetPortal extends CommonGLPI {
          return;
       }
       if ($compact) {
-         echo '<h2 class="h6 mt-3 mb-2"><i class="ti ti-link me-1"></i>'
+          echo '<h2 class="h6 mt-2 mb-2"><i class="ti ti-link me-1"></i>'
             . PluginIntranetLink::getTypeName(2) . '</h2>';
       }
        echo '<div class="intranet-links-grid">';

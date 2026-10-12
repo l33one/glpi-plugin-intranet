@@ -152,6 +152,9 @@ class PluginIntranetConfig extends CommonGLPI {
           $tabs['links']         = PluginIntranetLink::getTypeName(2);
           $tabs['banners']       = PluginIntranetBanner::getTypeName(2);
        }
+       if ($can_config || $can_manage) {
+          $tabs['css'] = __('CSS help', 'intranet');
+       }
       if (empty($tabs)) {
          Html::displayRightError();
          return false;
@@ -214,6 +217,8 @@ class PluginIntranetConfig extends CommonGLPI {
              $this->showLinksTab($self_url);
           } elseif ($tab === 'banners' && $can_manage) {
              $this->showBannersTab($self_url);
+          } elseif ($tab === 'css' && ($can_config || $can_manage)) {
+             $this->showCssHelpTab();
           } else {
             Html::displayRightError();
             return false;
@@ -1058,6 +1063,86 @@ class PluginIntranetConfig extends CommonGLPI {
                 </table>
              </div>
           </div>
+       </div>
+       <?php
+    }
+
+    /**
+     * Documentation tab: which selectors style the intranet, with copy-paste
+     * examples for the "Custom CSS" field of the General tab.
+     */
+    private function showCssHelpTab(): void {
+       $selectors = [
+          '.intranet-panel'            => __('Whole panel (tab and portal wrapper)', 'intranet'),
+          '.intranet-greeting'         => __('Greeting header', 'intranet'),
+          '.intranet-profile'          => __('Contact and assets card', 'intranet'),
+          '.intranet-carousel'         => __('Banner carousel', 'intranet'),
+          '.intranet-carousel-img'     => __('Banner image (size fits here)', 'intranet'),
+          '.intranet-metric'           => __('Ticket cards', 'intranet'),
+          '.intranet-metric-value'     => __('Ticket card numbers', 'intranet'),
+          '.intranet-links-grid'       => __('Quick-link grid (columns fit here)', 'intranet'),
+          '.intranet-tile'             => __('Quick-link tiles', 'intranet'),
+          '.intranet-tile-icon'        => __('Tile icon badge', 'intranet'),
+          '.intranet-announcements'    => __('Notice board list', 'intranet'),
+       ];
+       $examples = [
+          __('Gradient greeting', 'intranet') => ".intranet-greeting {\n"
+             . "  background: linear-gradient(135deg, #206bc4, #4299e1);\n"
+             . "  color: #fff;\n  border-radius: 0.75rem;\n  padding: 1.25rem 1.5rem;\n}\n"
+             . ".intranet-greeting .text-muted {\n  color: rgba(255, 255, 255, 0.85) !important;\n}",
+          __('Accent on ticket cards', 'intranet') => ".intranet-metric {\n"
+             . "  border-top: 4px solid #206bc4;\n}\n"
+             . ".intranet-metric-value {\n  color: #206bc4;\n}",
+          __('Bigger link tiles', 'intranet') => ".intranet-links-grid {\n"
+             . "  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));\n}\n"
+             . ".intranet-tile-icon {\n  width: 64px;\n  height: 64px;\n  border-radius: 50%;\n}",
+          __('Taller banners', 'intranet') => ".intranet-carousel-img {\n  max-height: 340px;\n}",
+       ];
+       ?>
+       <div class="card mb-3">
+          <div class="card-header">
+             <i class="ti ti-brush me-1"></i>
+             <?php echo __('How to customize the look', 'intranet'); ?>
+          </div>
+          <div class="card-body">
+             <p><?php echo __('Write extra CSS in the General tab. It applies to the Intranet tab and the portal. The classes below are stable styling hooks.', 'intranet'); ?></p>
+             <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0">
+                   <thead>
+                      <tr>
+                         <th><?php echo __('Selector', 'intranet'); ?></th>
+                         <th><?php echo __('Styles', 'intranet'); ?></th>
+                      </tr>
+                   </thead>
+                   <tbody>
+                      <?php foreach ($selectors as $selector => $label): ?>
+                         <tr>
+                            <td><code dir="ltr"><?php echo self::esc($selector); ?></code></td>
+                            <td><?php echo self::esc($label); ?></td>
+                         </tr>
+                      <?php endforeach; ?>
+                   </tbody>
+                </table>
+             </div>
+          </div>
+       </div>
+
+       <div class="card mb-3">
+          <div class="card-header">
+             <i class="ti ti-code me-1"></i>
+             <?php echo __('Examples (copy and paste)', 'intranet'); ?>
+          </div>
+          <div class="card-body">
+             <?php foreach ($examples as $title => $code): ?>
+                <h4 class="h6 mt-3"><?php echo self::esc($title); ?></h4>
+                <pre class="p-2 rounded bg-light border"><code dir="ltr"><?php echo self::esc($code); ?></code></pre>
+             <?php endforeach; ?>
+          </div>
+       </div>
+
+       <div class="alert alert-info">
+          <i class="ti ti-info-circle me-1"></i>
+          <?php echo __('CSS is sanitized on save: closing style tags and HTML comments are removed, max 20000 characters.', 'intranet'); ?>
        </div>
        <?php
     }
