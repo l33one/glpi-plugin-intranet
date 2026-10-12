@@ -603,3 +603,24 @@ msgstr "Abrir o portal da intranet"
 
 msgid "Logout"
 msgstr "Sair"
+
+msgid "Approval"
+msgstr "Aprovação"
+
+msgid "License"
+msgstr "Licença"
+
+msgid "Open"
+msgstr "Abertos"
+
+msgid "Pending"
+msgstr "Pendentes"
+
+msgid "Satisfaction"
+msgstr "Satisfação"
+
+msgid "Solved"
+msgstr "Solucionados"
+
+msgid "Watching"
+msgstr "Observando"

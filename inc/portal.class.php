@@ -137,7 +137,7 @@ public static function showCentralPanel($data = null) {
     }
 
     /**
-     * Fixed top navbar: hamburger, home/title, search, avatar + actions.
+     * Fixed top navbar: hamburger, home/title only (clean, no search, no user dropdown).
      *
      * @param boolean $is_portal True when rendering the full portal page
      */
@@ -145,20 +145,7 @@ public static function showCentralPanel($data = null) {
        /** @var array $CFG_GLPI */
        global $CFG_GLPI;
 
-       $me = (int)Session::getLoginUserID();
-       $user = new User();
-       $user->getFromDB($me);
-       $first = trim((string)($user->fields['firstname'] ?? ''));
-       if ($first === '') {
-          $first = trim((string)($user->fields['name'] ?? ''));
-       }
-       $avatar = ($me > 0 && !empty($user->fields['picture']))
-          ? self::getUserAvatar($user->fields)
-          : '';
-
        $portal_url = self::portalUrl();
-       $pref_url = ($CFG_GLPI['root_doc'] ?? '') . '/front/preference.php';
-       $config_url = self::configUrl();
 
        echo '<nav class="intranet-navbar navbar navbar-expand-lg navbar-light bg-light border-bottom">';
        echo '<div class="container-fluid">';
@@ -170,46 +157,6 @@ public static function showCentralPanel($data = null) {
        echo '<i class="ti ti-home text-primary fs-4"></i>';
        echo '<span class="fw-semibold d-none d-md-inline">' . self::esc(__('Intranet', 'intranet')) . '</span>';
        echo '</a>';
-
-       // Center: search (desktop only, hidden on mobile)
-       echo '<div class="intranet-nav-search d-none d-lg-flex flex-grow-1 mx-4">';
-       echo '<form class="w-100" action="' . self::esc($portal_url) . '" method="get">';
-       echo '<div class="input-group">';
-       echo '<input type="search" class="form-control rounded-start" name="q" placeholder="'
-          . self::esc(__('Search announcements...', 'intranet')) . '" value="">';
-       echo '<button class="btn btn-outline-secondary rounded-end" type="submit"><i class="ti ti-search"></i></button>';
-       echo '</div>';
-       echo '</form>';
-       echo '</div>';
-
-       // Right: avatar + name + icons + manage
-       echo '<div class="d-flex align-items-center gap-2 ms-auto">';
-       if ($is_portal && self::canManage()) {
-          echo '<a class="btn btn-sm btn-outline-primary d-none d-lg-inline-flex" href="' . self::esc($config_url) . '">'
-             . '<i class="ti ti-settings me-1"></i>' . self::esc(__('Manage content', 'intranet')) . '</a>';
-       }
-       echo '<div class="btn-group">';
-       echo '<a class="btn btn-link text-dark p-2" href="#" data-bs-toggle="dropdown" aria-expanded="false">';
-       if ($avatar !== '') {
-          echo '<img src="' . self::esc($avatar) . '" alt="" class="intranet-nav-avatar">';
-       } else {
-          echo '<i class="ti ti-user-circle fs-4 text-muted"></i>';
-       }
-       if ($first !== '') {
-          echo '<span class="ms-1 d-none d-md-inline fw-medium">' . self::esc($first) . '</span>';
-       }
-       echo '</a>';
-       echo '<ul class="dropdown-menu dropdown-menu-end">';
-       echo '<li><a class="dropdown-item" href="' . self::esc($pref_url) . '"><i class="ti ti-user-cog me-2"></i>'
-          . self::esc(__('My settings', 'intranet')) . '</a></li>';
-       echo '<li><a class="dropdown-item" href="' . self::esc($portal_url) . '"><i class="ti ti-home me-2"></i>'
-          . self::esc(__('Open the intranet portal', 'intranet')) . '</a></li>';
-       echo '<li><hr class="dropdown-divider"></li>';
-       echo '<li><a class="dropdown-item" href="' . ($CFG_GLPI['root_doc'] ?? '') . '/front/logout.php"><i class="ti ti-logout me-2"></i>'
-          . self::esc(__('Logout', 'intranet')) . '</a></li>';
-       echo '</ul>';
-       echo '</div>';
-       echo '</div>';
 
        echo '</div>';
        echo '</nav>';
@@ -249,6 +196,7 @@ public static function showCentralPanel($data = null) {
        $avatar = self::getUserAvatar($user_fields);
        $contact = ($me > 0 && !empty($user_fields)) ? self::getUserContact($me, $user_fields) : null;
        $assets  = ($me > 0 && !empty($user_fields)) ? self::getUserAssets($me) : [];
+       $licenses = ($me > 0 && !empty($user_fields)) ? self::getUserLicenses($me) : [];
 
        echo '<div class="card mb-2 intranet-hello"><div class="card-body">';
        echo '<div class="d-flex flex-wrap align-items-center gap-3">';
@@ -270,18 +218,15 @@ public static function showCentralPanel($data = null) {
           self::contactInline('ti-phone', $contact['phones']);
           self::contactInline('ti-user-check', $contact['manager']);
           self::contactInline('ti-users', $contact['groups']);
-          $pref_url = ($CFG_GLPI['root_doc'] ?? '') . '/front/preference.php';
-          echo '<a class="btn btn-sm btn-outline-primary mt-1" href="' . self::esc($pref_url) . '">'
-             . '<i class="ti ti-pencil me-1"></i>' . self::esc(__('Edit my data', 'intranet')) . '</a>';
           echo '</div>';
        }
        echo '</div>';
 
-       // Assets inline in the greeting bar (compact chips)
-       if (!empty($assets)) {
-          echo '<div class="intranet-hello-assets d-flex flex-wrap gap-1 mt-2">';
-          foreach (array_slice($assets, 0, 4) as $asset) {
-             echo '<span class="badge bg-light text-dark border intranet-asset-chip">';
+       // Assets + licenses inline in the greeting bar (compact chips)
+       if (!empty($assets) || !empty($licenses)) {
+          echo '<div class="intranet-hello-items d-flex flex-wrap gap-1 mt-2">';
+          foreach (array_slice($assets, 0, 3) as $asset) {
+             echo '<span class="badge bg-light text-dark border intranet-item-chip">';
              echo '<i class="' . self::esc($asset['icon']) . ' me-1 text-muted"></i>';
              if (!empty($asset['url'])) {
                 echo '<a href="' . self::esc($asset['url']) . '" class="text-decoration-none text-dark">' . self::esc($asset['label']) . '</a>';
@@ -290,9 +235,19 @@ public static function showCentralPanel($data = null) {
              }
              echo '</span>';
           }
-          if (count($assets) > 4) {
-             echo '<span class="badge bg-secondary intranet-asset-chip">+'
-                . (count($assets) - 4) . '</span>';
+          foreach (array_slice($licenses, 0, 3) as $license) {
+             echo '<span class="badge bg-light text-dark border intranet-item-chip">';
+             echo '<i class="' . self::esc($license['icon']) . ' me-1 text-muted"></i>';
+             if (!empty($license['url'])) {
+                echo '<a href="' . self::esc($license['url']) . '" class="text-decoration-none text-dark">' . self::esc($license['label']) . '</a>';
+             } else {
+                echo self::esc($license['label']);
+             }
+             echo '</span>';
+          }
+          $total_hidden = max(0, count($assets) - 3) + max(0, count($licenses) - 3);
+          if ($total_hidden > 0) {
+             echo '<span class="badge bg-secondary intranet-item-chip">+' . $total_hidden . '</span>';
           }
           echo '</div>';
        }
@@ -352,8 +307,8 @@ public static function showCentralPanel($data = null) {
     }
 
     /**
-     * Sidebar: fixed width, responsive tiles (logo + quick links).
-     * No collapsible strip; content always visible, tiles wrap responsively.
+     * Sidebar: fixed width, responsive tiles (logo + quick links + manage link at bottom).
+     * Links in responsive grid (2 per row on desktop, 1 on mobile).
      */
     private static function showSidebar(): void {
        $me = (int)Session::getLoginUserID();
@@ -368,6 +323,16 @@ public static function showCentralPanel($data = null) {
        if (PluginIntranetConfig::showLinks()) {
           self::showLinks(true, 'intranet-sidebar-links', false);
        }
+
+       // Manage content link at the bottom of sidebar
+       if (self::canManage()) {
+          $config_url = self::configUrl();
+          echo '<div class="intranet-sidebar-manage mt-auto pt-3">';
+          echo '<a class="btn btn-sm btn-outline-primary w-100" href="' . self::esc($config_url) . '">'
+             . '<i class="ti ti-settings me-1"></i>' . self::esc(__('Manage content', 'intranet')) . '</a>';
+          echo '</div>';
+       }
+
        echo '<div class="intranet-sidebar-footer">';
        echo '<small class="text-muted d-block text-center">' . self::esc(__('Intranet', 'intranet')) . '</small>';
        echo '</div>';
@@ -799,7 +764,69 @@ public static function showCentralPanel($data = null) {
           }
        }
 
-       return $assets;
+return $assets;
+     }
+
+    /**
+     * Software licenses assigned to a user (glpi_softwarelicenses.users_id),
+     * labelled with the parent software name when available.
+     *
+     * @param integer $users_id
+     * @return array List of {type, label, icon, url}
+     */
+    public static function getUserLicenses(int $users_id): array {
+       /** @var DBmysql $DB */
+       global $DB, $CFG_GLPI;
+
+       $licenses = [];
+       if ($users_id <= 0 || !$DB->tableExists('glpi_softwarelicenses')) {
+          return $licenses;
+       }
+       try {
+          $crit = [
+             'SELECT'     => ['glpi_softwarelicenses.id', 'glpi_softwarelicenses.name', 'glpi_softwarelicenses.serial'],
+             'FROM'       => 'glpi_softwarelicenses',
+             'INNER JOIN' => [
+                'glpi_softwares' => [
+                   'ON' => [
+                      'glpi_softwarelicenses' => 'softwares_id',
+                      'glpi_softwares'        => 'id',
+                   ],
+                ],
+             ],
+             'WHERE'  => [
+                'glpi_softwarelicenses.users_id'    => $users_id,
+                'glpi_softwarelicenses.is_deleted'  => 0,
+                'glpi_softwarelicenses.is_template' => 0,
+             ] + getEntitiesRestrictCriteria('glpi_softwarelicenses'),
+             'ORDER'  => ['glpi_softwares.name', 'glpi_softwarelicenses.name'],
+             'LIMIT'  => 20,
+          ];
+          $crit['SELECT'][] = 'glpi_softwares.name AS software_name';
+          $it = $DB->request($crit);
+       } catch (\Throwable $e) {
+          return $licenses;
+       }
+       foreach ($it as $row) {
+          $software = trim((string)($row['software_name'] ?? ''));
+          $name     = trim((string)($row['name'] ?? ''));
+          $serial   = trim((string)($row['serial'] ?? ''));
+          if ($name === '') {
+             $name = $software !== '' ? $software : ('#' . (int)$row['id']);
+          } elseif ($software !== '' && $name !== $software) {
+             $name = $software . ' · ' . $name;
+          }
+          if ($serial !== '') {
+             $name .= ' (' . $serial . ')';
+          }
+          $licenses[] = [
+             'type'  => __('License', 'intranet'),
+             'label' => $name,
+             'icon'  => 'ti ti-key',
+             'url'   => ($CFG_GLPI['root_doc'] ?? '') . '/front/softwarelicense.form.php?id=' . (int)$row['id'],
+          ];
+       }
+       return $licenses;
     }
 
     /**
@@ -870,31 +897,30 @@ public static function showCentralPanel($data = null) {
     }
 
     /**
-     * Metric tiles. Ticket numbers only appear for profiles that can view
-     * tickets; the asset tile only for profiles that can view computers.
+     * Metric tiles: short label + large colored number, one row on wide
+     * screens. Ticket numbers only appear for profiles that can view tickets.
      */
     private static function showMetrics(): void {
       $metrics = self::getMetrics();
       if (empty($metrics)) {
          return;
       }
-       echo '<div class="row g-2 mb-2 intranet-metrics">';
-       foreach ($metrics as $metric) {
-          // All cards on a single row on wide screens.
-          echo '<div class="col-6 col-md-4 col-xl-2">';
-         echo '<div class="intranet-metric card h-100"><div class="card-body d-flex align-items-center gap-3">';
-         echo '<div class="intranet-metric-icon text-' . self::esc($metric['color']) . '">'
-            . '<i class="' . self::esc($metric['icon']) . '"></i></div>';
-         echo '<div><div class="intranet-metric-value">' . (int)$metric['value'] . '</div>'
-            . '<div class="intranet-metric-label">' . self::esc($metric['label']) . '</div></div>';
-         echo '</div>';
-         if (!empty($metric['url'])) {
-            echo '<a class="stretched-link" href="' . self::esc($metric['url']) . '"'
-               . ' aria-label="' . self::esc($metric['label']) . '"></a>';
-         }
-         echo '</div></div>';
-      }
-      echo '</div>';
+        echo '<div class="row g-2 mb-2 intranet-metrics">';
+        foreach ($metrics as $metric) {
+           // All six cards on a single row on wide screens.
+           echo '<div class="col-4 col-md-2">';
+          echo '<div class="intranet-metric card h-100 border-start border-3 border-' . self::esc($metric['color']) . '">';
+          echo '<div class="card-body d-flex flex-column align-items-center justify-content-center text-center py-2">';
+          echo '<div class="intranet-metric-value text-' . self::esc($metric['color']) . '">' . (int)$metric['value'] . '</div>';
+          echo '<div class="intranet-metric-label text-muted">' . self::esc($metric['label']) . '</div>';
+          echo '</div>';
+          if (!empty($metric['url'])) {
+             echo '<a class="stretched-link" href="' . self::esc($metric['url']) . '"'
+                . ' aria-label="' . self::esc($metric['label']) . '"></a>';
+          }
+          echo '</div></div>';
+       }
+       echo '</div>';
    }
 
     /**
@@ -938,8 +964,6 @@ public static function showCentralPanel($data = null) {
        } catch (\Throwable $e) {
           return 0;
        }
-       // DISTINCT ids counted in PHP: works identically on GLPI 10 and 11
-       // (the builders disagree on the COUNT DISTINCT spelling).
        $count = 0;
        foreach ($it as $row) {
           $count++;
@@ -1042,8 +1066,8 @@ public static function showCentralPanel($data = null) {
     }
 
     /**
-     * Compute the metric tiles for the current user: only personal ticket
-     * cards plus pending satisfaction surveys from the last 7 days.
+     * Compute the metric tiles for the current user: compact, single row,
+     * short labels, large numbers, color-coded, no icons.
      *
      * @return array
      */
@@ -1069,48 +1093,43 @@ public static function showCentralPanel($data = null) {
           ? Ticket::getSearchURL()
           : ($root . '/front/ticket.php');
 
-       $metrics[] = [
-          'icon'  => 'ti ti-ticket',
-          'color' => 'primary',
-          'value' => self::countMyTickets($me, CommonITILActor::REQUESTER, [$incoming, $assigned, $planned]),
-          'label' => __('My open tickets', 'intranet'),
-          'url'   => $ticket_url,
-       ];
-       $metrics[] = [
-          'icon'  => 'ti ti-stamp',
-          'color' => 'warning',
-          'value' => self::countMyValidations($me),
-          'label' => __('Tickets awaiting my approval', 'intranet'),
-          'url'   => $ticket_url,
-       ];
-       $metrics[] = [
-          'icon'  => 'ti ti-eye',
-          'color' => 'info',
-          'value' => self::countMyTickets($me, CommonITILActor::OBSERVER, [$incoming, $assigned, $planned, $waiting]),
-          'label' => __('Tickets I watch', 'intranet'),
-          'url'   => $ticket_url,
-       ];
-       $metrics[] = [
-          'icon'  => 'ti ti-clock-pause',
-          'color' => 'secondary',
-          'value' => self::countMyTickets($me, CommonITILActor::REQUESTER, [$waiting]),
-          'label' => __('My pending tickets', 'intranet'),
-          'url'   => $ticket_url,
-       ];
-       $metrics[] = [
-          'icon'  => 'ti ti-check',
-          'color' => 'success',
-          'value' => self::countMyTickets($me, CommonITILActor::REQUESTER, [$solved]),
-          'label' => __('My solved tickets', 'intranet'),
-          'url'   => $ticket_url,
-       ];
-       $metrics[] = [
-          'icon'  => 'ti ti-star',
-          'color' => 'orange',
-          'value' => self::countPendingSurveys($me),
-          'label' => __('Pending satisfaction surveys (7 days)', 'intranet'),
-          'url'   => $ticket_url,
-       ];
+        // Short labels, color per metric, no icons
+        $metrics[] = [
+           'value'  => self::countMyTickets($me, CommonITILActor::REQUESTER, [$incoming, $assigned, $planned]),
+           'label'  => __('Open', 'intranet'),
+           'color'  => 'primary',
+           'url'    => $ticket_url,
+        ];
+        $metrics[] = [
+           'value'  => self::countMyValidations($me),
+           'label'  => __('Approval', 'intranet'),
+           'color'  => 'warning',
+           'url'    => $ticket_url,
+        ];
+        $metrics[] = [
+           'value'  => self::countMyTickets($me, CommonITILActor::OBSERVER, [$incoming, $assigned, $planned, $waiting]),
+           'label'  => __('Watching', 'intranet'),
+           'color'  => 'info',
+           'url'    => $ticket_url,
+        ];
+        $metrics[] = [
+           'value'  => self::countMyTickets($me, CommonITILActor::REQUESTER, [$waiting]),
+           'label'  => __('Pending', 'intranet'),
+           'color'  => 'secondary',
+           'url'    => $ticket_url,
+        ];
+        $metrics[] = [
+           'value'  => self::countMyTickets($me, CommonITILActor::REQUESTER, [$solved]),
+           'label'  => __('Solved', 'intranet'),
+           'color'  => 'success',
+           'url'    => $ticket_url,
+        ];
+        $metrics[] = [
+           'value'  => self::countPendingSurveys($me),
+           'label'  => __('Satisfaction', 'intranet'),
+           'color'  => 'danger',
+           'url'    => $ticket_url,
+        ];
 
        return $metrics;
     }

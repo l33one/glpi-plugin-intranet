@@ -41,19 +41,6 @@
    flex-shrink: 0;
 }
 
-.intranet-nav-avatar {
-   width: 32px;
-   height: 32px;
-   border-radius: 50%;
-   object-fit: cover;
-}
-
-.intranet-nav-search .form-control {
-   background: #f8f9fa;
-   border: none;
-   box-shadow: none;
-}
-
 .intranet-app-body {
    display: flex;
    flex: 1;
@@ -97,7 +84,7 @@
 /* Sidebar quick links: responsive grid, max 2 per row on wide, 1 on narrow */
 .intranet-sidebar-links {
    display: grid;
-   grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+   grid-template-columns: repeat(2, minmax(0, 1fr));
    gap: 0.5rem;
    flex: 1;
    align-content: start;
@@ -112,6 +99,10 @@
    margin-top: auto;
    padding-top: 1rem;
    border-top: 1px solid var(--tblr-border-color, #dee2e6);
+}
+
+.intranet-sidebar-manage {
+   flex-shrink: 0;
 }
 
 .intranet-main {
@@ -138,16 +129,31 @@
    Metrics row: responsive wrap, NO horizontal scroll
    ========================================================================== */
 .intranet-metrics {
-   display: flex;
-   flex-wrap: wrap;
-   gap: 0.75rem;
-   padding-bottom: 0.5rem;
+   /* Bootstrap .row handles the single-row grid and wrapping. */
+   row-gap: 0.5rem;
 }
 
 .intranet-metric {
-   flex: 1 1 180px;
-   max-width: 100%;
    min-width: 0;
+   transition: transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
+.intranet-metric:hover {
+   box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.08);
+}
+
+.intranet-metric-value {
+   font-size: 1.6rem;
+   font-weight: 700;
+   line-height: 1.1;
+}
+
+.intranet-metric-label {
+   font-size: 0.72rem;
+   font-weight: 600;
+   text-transform: uppercase;
+   letter-spacing: 0.02em;
+   line-height: 1.1;
 }
 
 /* ==========================================================================
@@ -227,22 +233,25 @@
    max-width: 100%;
 }
 
-/* Assets chips inside greeting bar */
-.intranet-hello-assets {
+/* Assets/licenses chips inside greeting bar */
+.intranet-hello-items {
    flex-basis: 100%;
 }
 
-.intranet-asset-chip {
+.intranet-item-chip {
    font-size: 0.68rem;
    padding: 0.2rem 0.5rem;
+   max-width: 100%;
+   overflow: hidden;
+   text-overflow: ellipsis;
    white-space: nowrap;
 }
 
-.intranet-asset-chip a {
+.intranet-item-chip a {
    color: inherit;
 }
 
-.intranet-asset-chip a:hover {
+.intranet-item-chip a:hover {
    color: var(--tblr-primary, #206bc4);
 }
 
@@ -265,7 +274,7 @@
 }
 
 .intranet-sidebar-links {
-   grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .intranet-sidebar-links .intranet-tile {
@@ -372,7 +381,7 @@
 
 .intranet-sidebar-links {
    display: grid;
-   grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+   grid-template-columns: repeat(2, minmax(0, 1fr));
    gap: 0.5rem;
    flex: 1;
    align-content: start;
@@ -387,6 +396,10 @@
    margin-top: auto;
    padding-top: 1rem;
    border-top: 1px solid var(--tblr-border-color, #dee2e6);
+}
+
+.intranet-sidebar-manage {
+   flex-shrink: 0;
 }
 
 /* ==========================================================================
@@ -407,19 +420,6 @@
    padding: 0 1rem;
    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
    flex-shrink: 0;
-}
-
-.intranet-nav-avatar {
-   width: 32px;
-   height: 32px;
-   border-radius: 50%;
-   object-fit: cover;
-}
-
-.intranet-nav-search .form-control {
-   background: #f8f9fa;
-   border: none;
-   box-shadow: none;
 }
 
 .intranet-app-body {
@@ -453,16 +453,31 @@
    Metrics row: responsive wrap, NO horizontal scroll
    ========================================================================== */
 .intranet-metrics {
-   display: flex;
-   flex-wrap: wrap;
-   gap: 0.75rem;
-   padding-bottom: 0.5rem;
+   /* Bootstrap .row handles the single-row grid and wrapping. */
+   row-gap: 0.5rem;
 }
 
 .intranet-metric {
-   flex: 1 1 180px;
-   max-width: 100%;
    min-width: 0;
+   transition: transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
+.intranet-metric:hover {
+   box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.08);
+}
+
+.intranet-metric-value {
+   font-size: 1.6rem;
+   font-weight: 700;
+   line-height: 1.1;
+}
+
+.intranet-metric-label {
+   font-size: 0.72rem;
+   font-weight: 600;
+   text-transform: uppercase;
+   letter-spacing: 0.02em;
+   line-height: 1.1;
 }
 
 /* Forms and saved searches cards */
@@ -538,22 +553,25 @@
    max-width: 100%;
 }
 
-/* Assets chips inside greeting bar */
-.intranet-hello-assets {
+/* Assets/licenses chips inside greeting bar */
+.intranet-hello-items {
    flex-basis: 100%;
 }
 
-.intranet-asset-chip {
+.intranet-item-chip {
    font-size: 0.68rem;
    padding: 0.2rem 0.5rem;
+   max-width: 100%;
+   overflow: hidden;
+   text-overflow: ellipsis;
    white-space: nowrap;
 }
 
-.intranet-asset-chip a {
+.intranet-item-chip a {
    color: inherit;
 }
 
-.intranet-asset-chip a:hover {
+.intranet-item-chip a:hover {
    color: var(--tblr-primary, #206bc4);
 }
 
@@ -576,7 +594,7 @@
 }
 
 .intranet-sidebar-links {
-   grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .intranet-sidebar-links .intranet-tile {
@@ -683,7 +701,7 @@
 
 .intranet-sidebar-links {
    display: grid;
-   grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+   grid-template-columns: repeat(2, minmax(0, 1fr));
    gap: 0.5rem;
    flex: 1;
    align-content: start;
@@ -698,6 +716,10 @@
    margin-top: auto;
    padding-top: 1rem;
    border-top: 1px solid var(--tblr-border-color, #dee2e6);
+}
+
+.intranet-sidebar-manage {
+   flex-shrink: 0;
 }
 
 /* ==========================================================================
@@ -718,19 +740,6 @@
    padding: 0 1rem;
    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
    flex-shrink: 0;
-}
-
-.intranet-nav-avatar {
-   width: 32px;
-   height: 32px;
-   border-radius: 50%;
-   object-fit: cover;
-}
-
-.intranet-nav-search .form-control {
-   background: #f8f9fa;
-   border: none;
-   box-shadow: none;
 }
 
 .intranet-app-body {
@@ -758,18 +767,12 @@
    .intranet-main {
       padding: 1rem;
    }
-   .intranet-nav-search {
-      display: none !important;
-   }
 }
 
 @media (max-width: 575.98px) {
    .intranet-hello-contact {
       width: 100%;
       margin-top: 0.5rem;
-   }
-   .intranet-metric {
-      flex: 1 1 100%;
    }
    .intranet-avatar {
       width: 40px;
