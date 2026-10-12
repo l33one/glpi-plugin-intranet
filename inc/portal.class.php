@@ -98,13 +98,13 @@ class PluginIntranetPortal extends CommonGLPI {
           self::showGreeting(true);
        }
        self::showBanners('panel');
-      if (PluginIntranetConfig::showMetrics()) {
-         self::showMetrics();
-      }
-      self::showAnnouncements($max_announcements, true);
-      if (PluginIntranetConfig::showLinks()) {
-         self::showLinks(true);
-      }
+       if (PluginIntranetConfig::showMetrics()) {
+          self::showMetrics();
+       }
+       if (PluginIntranetConfig::showLinks()) {
+          self::showLinks(true);
+       }
+       self::showAnnouncements($max_announcements, true);
 
       echo '<div class="mt-3 d-flex flex-wrap gap-2">';
       echo '<a class="btn btn-sm btn-outline-primary" href="' . self::esc(self::portalUrl()) . '">'
@@ -157,45 +157,45 @@ class PluginIntranetPortal extends CommonGLPI {
           self::showMetrics();
        }
 
-      // Notice board with search + category filter
-      $categories = PluginIntranetAnnouncement::getCategories();
-      echo '<div class="card mb-3"><div class="card-body">';
-      echo '<form method="get" action="' . self::esc(self::portalUrl()) . '" class="row g-2 align-items-end mb-3">';
-      echo '<div class="col-12 col-md-6"><label class="form-label fw-semibold" for="intranet-q">'
-         . __('Search announcements', 'intranet') . '</label>'
-         . '<input type="search" class="form-control" id="intranet-q" name="q" value="' . self::esc($search) . '"'
-         . ' placeholder="' . self::esc(__('Search by title or content...', 'intranet')) . '"></div>';
-      echo '<div class="col-12 col-md-4"><label class="form-label fw-semibold" for="intranet-cat">'
-         . __('Category', 'intranet') . '</label>'
-         . '<select class="form-select" id="intranet-cat" name="cat">'
-         . '<option value="">' . __('All categories', 'intranet') . '</option>';
-      foreach ($categories as $key => $label) {
-         echo '<option value="' . self::esc($key) . '"' . ($category === $key ? ' selected' : '') . '>'
-            . self::esc($label) . '</option>';
-      }
-      echo '</select></div>';
-      echo '<div class="col-12 col-md-2 d-flex gap-2">'
-         . '<button type="submit" class="btn btn-primary flex-fill"><i class="ti ti-search me-1"></i>'
-         . __('Search', 'intranet') . '</button>';
-      if ($search !== '' || $category !== '') {
-         echo '<a class="btn btn-outline-secondary" href="' . self::esc(self::portalUrl()) . '"'
-            . ' title="' . self::esc(__('Clear', 'intranet')) . '"><i class="ti ti-x"></i></a>';
-      }
-      echo '</div></form>';
+       // Quick links first, then the notice board with search + category filter.
+       if (PluginIntranetConfig::showLinks()) {
+          echo '<div class="card mb-3"><div class="card-body">';
+          echo '<h2 class="h5 mb-3"><i class="ti ti-link me-1"></i>'
+             . PluginIntranetLink::getTypeName(2) . '</h2>';
+          self::showLinks(false);
+          echo '</div></div>';
+       }
 
-      self::showAnnouncements(0, false, $category, $search);
-      echo '</div></div>';
+       $categories = PluginIntranetAnnouncement::getCategories();
+       echo '<div class="card mb-3"><div class="card-body">';
+       echo '<form method="get" action="' . self::esc(self::portalUrl()) . '" class="row g-2 align-items-end mb-3">';
+       echo '<div class="col-12 col-md-6"><label class="form-label fw-semibold" for="intranet-q">'
+          . __('Search announcements', 'intranet') . '</label>'
+          . '<input type="search" class="form-control" id="intranet-q" name="q" value="' . self::esc($search) . '"'
+          . ' placeholder="' . self::esc(__('Search by title or content...', 'intranet')) . '"></div>';
+       echo '<div class="col-12 col-md-4"><label class="form-label fw-semibold" for="intranet-cat">'
+          . __('Category', 'intranet') . '</label>'
+          . '<select class="form-select" id="intranet-cat" name="cat">'
+          . '<option value="">' . __('All categories', 'intranet') . '</option>';
+       foreach ($categories as $key => $label) {
+          echo '<option value="' . self::esc($key) . '"' . ($category === $key ? ' selected' : '') . '>'
+             . self::esc($label) . '</option>';
+       }
+       echo '</select></div>';
+       echo '<div class="col-12 col-md-2 d-flex gap-2">'
+          . '<button type="submit" class="btn btn-primary flex-fill"><i class="ti ti-search me-1"></i>'
+          . __('Search', 'intranet') . '</button>';
+       if ($search !== '' || $category !== '') {
+          echo '<a class="btn btn-outline-secondary" href="' . self::esc(self::portalUrl()) . '"'
+             . ' title="' . self::esc(__('Clear', 'intranet')) . '"><i class="ti ti-x"></i></a>';
+       }
+       echo '</div></form>';
 
-      if (PluginIntranetConfig::showLinks()) {
-         echo '<div class="card mb-3"><div class="card-body">';
-         echo '<h2 class="h5 mb-3"><i class="ti ti-link me-1"></i>'
-            . PluginIntranetLink::getTypeName(2) . '</h2>';
-         self::showLinks(false);
-         echo '</div></div>';
-      }
+       self::showAnnouncements(0, false, $category, $search);
+       echo '</div></div>';
 
-      echo '</div>';
-      self::showReaderModal();
+       echo '</div>';
+       self::showReaderModal();
    }
 
     /**
